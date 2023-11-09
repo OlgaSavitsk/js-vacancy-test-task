@@ -9,7 +9,6 @@ import { RoutePath } from 'routes';
 import { LogoImage } from 'public/images';
 
 import UserMenu from './components/UserMenu';
-import ShadowLoginBanner from './components/ShadowLoginBanner';
 import MenuToggle from './components/MenuToggle';
 
 const Header: FC = () => {
@@ -19,7 +18,6 @@ const Header: FC = () => {
 
   return (
     <LayoutHeader height="72px">
-      {account.isShadow && <ShadowLoginBanner email={account.email} />}
       {/* {account.isShadow && <ShadowLoginBanner email={account.email} />} */}
       <Container
         sx={(theme) => ({

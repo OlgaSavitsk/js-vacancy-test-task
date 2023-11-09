@@ -1,30 +1,27 @@
-import { AppKoaContext, Next, AppRouter } from 'types';
-
-import { userService } from 'resources/user';
+import { AppKoaContext, AppRouter } from 'types';
 
 import { cloudStorageService } from 'services';
+import { z } from 'zod';
+import { validateMiddleware } from 'middlewares';
 
-async function validator(ctx: AppKoaContext, next: Next) {
-  const { user } = ctx.state;
+const schema = z.object({
+  photoUrl: z.string().nullable().optional(),
+});
 
-  ctx.assertClientError(user.avatarUrl, { global: 'You don\'t have avatar' });
+type ValidatedData = z.infer<typeof schema>
 
-  await next();
-}
 
-async function handler(ctx: AppKoaContext) {
-  const { user } = ctx.state;
+async function handler(ctx: AppKoaContext<ValidatedData>) {
+  
+  const { photoUrl } = ctx.validatedData;
 
-  const fileKey = cloudStorageService.helpers.getFileKey(user.avatarUrl || '');
+   const updatedProduct = await new Promise(resolve =>
+    resolve(cloudStorageService.deleteFile(photoUrl || '')),
+  );
 
-  const [updatedUser] = await Promise.all([
-    userService.updateOne({ _id: user._id }, () => ({ avatarUrl: null })),
-    cloudStorageService.deleteObject(fileKey),
-  ]);
-
-  ctx.body = userService.getPublic(updatedUser);
+  ctx.body = updatedProduct;
 }
 
 export default (router: AppRouter) => {
-  router.delete('/avatar', validator, handler);
+  router.delete('/avatar', validateMiddleware(schema), handler);
 };

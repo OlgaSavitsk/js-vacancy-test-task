@@ -48,10 +48,7 @@ const passwordRules = [
 
 const SignUp: NextPage = () => {
   const [registered, setRegistered] = useState(false);
-  // const [signupToken, setSignupToken] = useState();
-
   const [passwordRulesData, setPasswordRulesData] = useState(passwordRules);
-  // const [opened, setOpened] = useState(false);
 
   const {
     register,
@@ -80,9 +77,6 @@ const SignUp: NextPage = () => {
   const onSubmit = (data: SignUpParams) => signUp(data, {
     onSuccess: (response: any) => {
       if (response.signupToken) setRegistered(true);
-
-      // setRegistered(true);
-      // setEmail(data.email);
     },
     onError: (e) => handleError(e, setError),
   });

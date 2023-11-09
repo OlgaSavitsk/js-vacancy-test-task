@@ -13,7 +13,6 @@ interface NumberInput extends NumericFormatProps {
   name?: 'payment_from' | 'payment_to',
   register?: UseFormRegister<FieldValues>,
   control?: Control<FieldValues>,
-  // callback?: (event: ChangeEvent<HTMLInputElement>) => void,
 }
 
 const NestedInput: FC<NumberInput> = memo(

@@ -2,6 +2,7 @@ import { ChangeEvent, useCallback, useLayoutEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Head from 'next/head';
 import { NextPage } from 'next';
+import { z } from 'zod';
 import {
   Select,
   TextInput,
@@ -19,13 +20,11 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch, IconX, IconChevronDown, IconArrowsDownUp } from '@tabler/icons-react';
-// import { ColumnDef, RowSelectionState, SortingState } from '@tanstack/react-table';
 
 import { Card, NumberInput, Pill } from 'components';
 
-import { userApi } from 'resources/user';
 import { FormProvider, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { productsApi } from 'resources/products';
 import { useStyles } from './styles';
 
 interface UsersListParams {
@@ -101,8 +100,6 @@ const Home: NextPage = () => {
 
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
-  // const onSubmit = (data: SalaryParams) => console.log(data);
-
   const handleSort = useCallback((val: string) => {
     setSortBy(val);
     setParams((prev) => ({
@@ -116,30 +113,6 @@ const Home: NextPage = () => {
   }, []);
 
   const handleRemove = (val: string) => setValue((current) => current.filter((v) => v !== val));
-  // const handleFilter = useCallback(([sinceDate, dueDate]: DatesRangeValue) => {
-  //   setFilterDate([sinceDate, dueDate]);
-
-  //   if (!sinceDate) {
-  //     setParams((prev) => ({
-  //       ...prev,
-  //       filter: {},
-  //     }));
-  //   }
-
-  //   if (dueDate) {
-  //     setParams((prev) => ({
-  //       ...prev,
-  //       filter: { createdOn: { sinceDate, dueDate } },
-  //     }));
-  //   }
-  // }, []);
-
-  // console.log(watch());
-
-  // useEffect(() => {
-  //   const subscription = watch((value, { name, type }) => console.log(value, name, type));
-  //   return () => subscription.unsubscribe();
-  // }, [watch]);
 
   const handleReset = () => {
     methods.reset();
@@ -169,7 +142,7 @@ const Home: NextPage = () => {
     setParams((prev) => ({ ...prev, page: 1, searchValue: debouncedSearch, perPage: PER_PAGE }));
   }, [debouncedSearch]);
 
-  const { data, isLoading: isListLoading } = userApi.useList(params);
+  const { data, isLoading: isListLoading } = productsApi.useList(params);
 
   return (
     <>
@@ -289,9 +262,9 @@ const Home: NextPage = () => {
                 </Group>
                 <Pill value={value} onRemove={() => handleRemove('222')} />
               </Skeleton>
-              {data?.items.length ? (
+              {data?.products.length ? (
                 <Grid gutter={20}>
-                  {[1, 2, 3, 4, 5, 6].map((item) => (
+                  {data.products.map((item) => (
                     <Grid.Col span={4}>
                       <Skeleton
                         key={`sklton-${String(item)}`}
@@ -300,7 +273,7 @@ const Home: NextPage = () => {
                         width="auto"
                         height="auto"
                       >
-                        <Card />
+                        <Card product={item} />
                       </Skeleton>
                     </Grid.Col>
 

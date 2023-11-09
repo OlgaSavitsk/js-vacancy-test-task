@@ -69,19 +69,27 @@ export function useUpdate<T>() {
 export function useUploadAvatar<T>() {
   const uploadAvatar = (data: T) => apiService.post('/account/avatar', data);
 
-  return useMutation<User, unknown, T>(uploadAvatar, {
+  interface UploadAvatarResponse {
+    photoUrl: string;
+  }
+
+  return useMutation<UploadAvatarResponse, unknown, T>(uploadAvatar, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['account'], data);
+      queryClient.setQueryData<UploadAvatarResponse>(['avatar'], data);
     },
   });
 }
 
-export function useRemoveAvatar() {
-  const removeAvatar = () => apiService.delete('/account/avatar');
+export function useRemoveAvatar<T>() {
+  const removeAvatar = (data: T) => apiService.delete('/account/avatar', data);
 
-  return useMutation<User>(removeAvatar, {
+  interface UploadAvatarResponse {
+    photoUrl: string;
+  }
+
+  return useMutation<UploadAvatarResponse, unknown, T>(removeAvatar, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['account'], data);
+      queryClient.setQueryData(['avatar'], data);
     },
   });
 }

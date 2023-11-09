@@ -1,5 +1,5 @@
 import { z } from 'zod';
 
-import { ProductSchema } from 'schemas';
+import { productsSchema } from 'schemas';
 
-export type Products = z.infer<typeof ProductSchema>;
+export type Products = z.infer<typeof productsSchema>;

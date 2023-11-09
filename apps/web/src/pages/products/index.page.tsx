@@ -1,17 +1,16 @@
-import { ActionIcon, rem, Skeleton, Stack, Title, UnstyledButton, Text, Paper, Flex } from '@mantine/core';
+import { ActionIcon, rem, Skeleton, Stack, Title, UnstyledButton, Text, Paper, Flex, Container, Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { IconPlus } from '@tabler/icons-react';
-import { Card } from 'components';
+import { Card, NewProduct } from 'components';
 import { NextPage } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
-// import { useState } from 'react';
-// import { userApi } from 'resources/user';
-import { RoutePath } from 'routes';
+import { accountApi } from 'resources/account';
 
 // eslint-disable-next-line arrow-body-style
 const Products: NextPage = () => {
-  // const [params, setParams] = useState({});
-  // const { data, isLoading: isListLoading } = userApi.useList(params);
+  const [opened, { open, close }] = useDisclosure(false);
+  const { data: account, isLoading: isListLoading } = accountApi.useGet();
+
   return (
     <>
       <Head>
@@ -26,24 +25,32 @@ const Products: NextPage = () => {
           wrap="wrap"
           justify={{ base: 'center', lg: 'flex-start' }}
         >
+          <Modal
+            opened={opened}
+            onClose={close}
+            title="This is a fullscreen modal"
+            fullScreen
+            radius={0}
+            transitionProps={{ transition: 'fade', duration: 200 }}
+          >
+            <NewProduct />
+          </Modal>
           <Paper
             w={271}
             radius="lg"
-            component={Link}
-            href={RoutePath.Profile}
             withBorder
             sx={{
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               height: '266px',
-              '@media (max-width: 755px)': {
+              '@media (max-width: 640px)': {
                 maxWidth: '100%',
                 width: '100%',
               },
             }}
           >
-            <UnstyledButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', rowGap: '12px' }}>
+            <UnstyledButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', rowGap: '12px' }} onClick={open}>
               <ActionIcon size="xl" color="blue" radius="xl" variant="filled">
                 <IconPlus size={rem(40)} />
               </ActionIcon>
@@ -53,23 +60,28 @@ const Products: NextPage = () => {
             </UnstyledButton>
           </Paper>
 
-          {[1, 2, 3, 4, 5, 6].map((item) => (
+          {account?.products ? (account.products.map((item) => (
             <Skeleton
               key={`sklton-${String(item)}`}
               radius="lg"
-              // visible={isListLoading}
+              visible={isListLoading}
               width={271}
               sx={{
-                '@media (max-width: 755px)': {
+                '@media (max-width: 640px)': {
                   maxWidth: '100%',
                   width: '100%',
                 },
               }}
             >
-              <Card isCreate />
+              <Card isCreate product={item} />
             </Skeleton>
-
-          ))}
+          ))) : (
+            <Container p={75}>
+              <Text size="xl" color="grey">
+                No results found, try to adjust your search.
+              </Text>
+            </Container>
+          )}
 
         </Flex>
       </Stack>

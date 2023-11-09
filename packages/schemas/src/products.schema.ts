@@ -1,9 +1,12 @@
 import { z } from 'zod';
-
 import dbSchema from './db.schema';
 
-export const ProductSchema = dbSchema.extend({
-  title: z.string(),
-  price: z.string(),
-  photoUrl: z.string().nullable().optional(),
-}).strict();
+export const productsSchema = dbSchema
+  .extend({
+    _id: z.string(),
+    userId: z.string().optional(),
+    title: z.string().optional(),
+    price: z.string().optional(),
+    photoUrl: z.string().nullable().optional(),
+  })
+  .strict();
