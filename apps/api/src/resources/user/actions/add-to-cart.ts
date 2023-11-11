@@ -5,15 +5,10 @@ import { AppKoaContext, Next, AppRouter, User } from "types";
 import { userService } from "resources/user";
 
 import { validateMiddleware } from "middlewares";
-import { productsService } from "resources/products";
-
-import config from "config";
+import { productsSchema } from "schemas";
 
 const schema = z.object({
-  title: z.string().optional(),
-  price: z.number().optional(),
-  photoUrl: z.string().nullable().optional(),
-  userId: z.string().optional(),
+  product: productsSchema,
 });
 
 interface ValidatedData extends z.infer<typeof schema> {
@@ -21,7 +16,9 @@ interface ValidatedData extends z.infer<typeof schema> {
 }
 
 async function validator(ctx: AppKoaContext<ValidatedData>, next: Next) {
-  const { userId } = ctx.validatedData;
+  const {
+    product: { userId },
+  } = ctx.validatedData;
 
   const user = await userService.findOne({ _id: userId });
 
@@ -33,22 +30,15 @@ async function validator(ctx: AppKoaContext<ValidatedData>, next: Next) {
 }
 
 async function handler(ctx: AppKoaContext<ValidatedData>) {
-  const { title, price, user, photoUrl } = ctx.validatedData;
-
-  const product = await productsService.insertOne({
-    title,
-    price,
-    photoUrl: photoUrl,
-    userId: user._id,
-  });
+  const { user, product } = ctx.validatedData;
 
   await userService.updateOne({ _id: user._id }, (old) => ({
-    products: [...old.products, product]
+    cart: [...old.cart, product],
   }));
 
   ctx.body = product;
 }
 
 export default (router: AppRouter) => {
-  router.post('/', validateMiddleware(schema), validator, handler);
+  router.post('/cart', validateMiddleware(schema), validator, handler);
 };

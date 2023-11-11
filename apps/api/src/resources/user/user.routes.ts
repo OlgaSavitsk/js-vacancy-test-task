@@ -1,19 +1,22 @@
 import { routeUtil } from 'utils';
 
 import list from './actions/list';
-// import update from '../products/actions/update';
+import addToCart from './actions/add-to-cart';
+import removeFromCart from './actions/remove-from-cart';
 import remove from './actions/remove';
 
 const publicRoutes = routeUtil.getRoutes([
+  addToCart,
 ]);
 
 const privateRoutes = routeUtil.getRoutes([
   list,
+  addToCart,
+  removeFromCart,
 ]);
 
 const adminRoutes = routeUtil.getRoutes([
   list,
-  // update,
   remove,
 ]);
 

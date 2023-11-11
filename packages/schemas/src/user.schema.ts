@@ -7,7 +7,7 @@ const productsSchema = dbSchema
     _id: z.string(),
     userId: z.string().optional(),
     title: z.string().optional(),
-    price: z.string().optional(),
+    price: z.number().optional(),
     photoUrl: z.string().nullable().optional(),
   })
   .strict();
@@ -30,6 +30,7 @@ export const userSchema = dbSchema
       })
       .optional(),
     products: z.array(productsSchema),
+    cart: z.array(productsSchema).default([]),
 
     lastRequest: z.date().optional(),
   })

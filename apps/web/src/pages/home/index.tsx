@@ -51,24 +51,6 @@ const selectOptions: SelectItem[] = [
   },
 ];
 
-// const columns: ColumnDef<userTypes.User>[] = [
-//   {
-//     accessorKey: 'firstName',
-//     header: 'First Name',
-//     cell: (info) => info.getValue(),
-//   },
-//   {
-//     accessorKey: 'lastName',
-//     header: 'Last Name',
-//     cell: (info) => info.getValue(),
-//   },
-//   {
-//     accessorKey: 'email',
-//     header: 'Email',
-//     cell: (info) => info.getValue(),
-//   },
-// ];
-
 const PER_PAGE = 5;
 
 const schema = z.object({
@@ -134,9 +116,6 @@ const Home: NextPage = () => {
       },
     }));
   };
-  // signIn(data, {
-  //   onError: (e) => handleError(e, setError),
-  // });
 
   useLayoutEffect(() => {
     setParams((prev) => ({ ...prev, page: 1, searchValue: debouncedSearch, perPage: PER_PAGE }));
@@ -300,21 +279,6 @@ const Home: NextPage = () => {
             </Stack>
           </Grid.Col>
         </Grid>
-        {/* <Skeleton
-              height={42}
-              radius="sm"
-              visible={isListLoading}
-              width="auto"
-              style={{ overflow: 'unset' }}
-            >
-              <DatePickerInput
-                type="range"
-                size="md"
-                placeholder="Pick date"
-                value={filterDate}
-                onChange={handleFilter}
-              />
-            </Skeleton> */}
         {isListLoading && (
           <>
             {[1, 2, 3].map((item) => (

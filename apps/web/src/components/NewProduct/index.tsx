@@ -15,8 +15,8 @@ import { useState } from 'react';
 import PhotoUpload from './components/PhotoUpload';
 
 const schema = z.object({
-  title: z.string().min(1, 'Please enter First name').max(100),
-  price: z.string().min(1, 'Please enter Last name').max(100),
+  title: z.string().min(1, 'Please enter Title').max(100),
+  price: z.number().min(1, 'Please enter Price').max(100),
 });
 
 interface UpdateParams extends z.infer<typeof schema> {
@@ -46,7 +46,11 @@ const NewProduct: NextPage = () => {
 
   const onSubmit = (
     submitData: UpdateParams,
-  ) => create({ ...submitData, userId: account!._id, photoUrl: photoUrl! }, {
+  ) => create({
+    ...submitData,
+    price: Number(submitData.price),
+    userId: account!._id,
+    photoUrl: photoUrl! }, {
     onSuccess: (data) => {
       queryClient.setQueryData(['products'], data);
       showNotification({

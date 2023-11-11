@@ -9,7 +9,7 @@ import { productsService } from "resources/products";
 
 const schema = z.object({
   title: z.string().min(1, "Please enter First name").max(100),
-  price: z.string().min(1, "Please enter Last name").max(100),
+  price: z.number().min(1, "Please enter Last name").max(100),
 });
 
 type ValidatedData = z.infer<typeof schema>;

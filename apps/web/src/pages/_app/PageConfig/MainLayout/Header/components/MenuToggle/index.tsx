@@ -2,7 +2,8 @@ import { forwardRef, memo } from 'react';
 import { Group, Indicator, UnstyledButton } from '@mantine/core';
 
 import { accountApi } from 'resources/account';
-import { Link } from 'components';
+// import { Link } from 'components';
+import NextLink from 'next/link';
 import { CartIcon, LogoutIcon } from 'public/icons';
 import { RoutePath } from 'routes';
 
@@ -16,16 +17,14 @@ const MenuToggle = forwardRef<HTMLButtonElement>((props, ref) => {
   return (
     <Group>
       <UnstyledButton ref={ref} {...props}>
-        <Link
+        <NextLink
           type="router"
-          href={RoutePath.SignIn}
-          inherit
-          underline={false}
+          href={RoutePath.Cart}
         >
           <Indicator inline label={1} size={20}>
             <CartIcon />
           </Indicator>
-        </Link>
+        </NextLink>
       </UnstyledButton>
       <UnstyledButton onClick={() => signOut()}>
         <LogoutIcon />

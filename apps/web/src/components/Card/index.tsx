@@ -1,7 +1,10 @@
 import { Group, Button, Card, Image, Text, ActionIcon, MantineTheme } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { IconTrash } from '@tabler/icons-react';
+import queryClient from 'query-client';
 import { FC, memo } from 'react';
 import { productsApi } from 'resources/products';
+import { userApi } from 'resources/user';
 import { Products } from 'types';
 
 interface CardProps extends React.ComponentPropsWithoutRef<'div'> {
@@ -12,8 +15,26 @@ interface CardProps extends React.ComponentPropsWithoutRef<'div'> {
 const CardProduct: FC<CardProps> = ({ isCreate, product }) => {
   const { mutate: removeProduct } = productsApi.useRemoveProduct();
 
+  const {
+    mutate: addToCart,
+  } = userApi.useAddToCart();
+
   const handlerProductRemove = async () => {
     await removeProduct(product._id);
+  };
+
+  const handlerAddToCart = async () => {
+    await addToCart({ product: { ...product }, userId: product.userId }, {
+      onSuccess: (data) => {
+        queryClient.setQueryData(['cart'], data);
+        showNotification({
+          title: 'Success',
+          message: 'Your product has been successfully add to cart.',
+          color: 'green',
+        });
+      },
+      // onError: (e) => handleError(e, setError),
+    });
   };
 
   return (
@@ -53,7 +74,7 @@ const CardProduct: FC<CardProps> = ({ isCreate, product }) => {
       </Group>
 
       {!isCreate && (
-        <Button variant="filled" color="blue" fullWidth mt="md" radius="md" size="md">
+        <Button variant="filled" color="blue" fullWidth mt="md" radius="md" size="md" onClick={handlerAddToCart}>
           Add to Cart
         </Button>
       )}

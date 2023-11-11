@@ -7,5 +7,6 @@ export const globalStyles = (theme: MantineTheme): CSSObject => ({
 
   body: {
     ...theme.fn.fontStyles(),
+    backgroundColor: '#FCFCFC',
   },
 });

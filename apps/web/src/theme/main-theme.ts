@@ -126,6 +126,11 @@ const mainTheme: MantineThemeOverride = {
         },
       }),
     },
+    Table: {
+      defaultProps: {
+        backgroundColor: 'transparent',
+      },
+    },
   },
 };
 

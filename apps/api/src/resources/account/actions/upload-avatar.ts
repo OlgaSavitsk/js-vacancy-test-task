@@ -4,8 +4,6 @@ import { Next, AppKoaContext, AppRouter } from "types";
 
 import { cloudStorageService } from "services";
 
-import config from 'config';
-
 const upload = multer();
 
 async function validator(ctx: AppKoaContext, next: Next) {
@@ -25,8 +23,6 @@ async function handler(ctx: AppKoaContext) {
     `accounts/${fileName}`,
     file
   );
-
-  // ctx.redirect(config.WEB_URL);
 
   ctx.body = {photoUrl: Location};
 }

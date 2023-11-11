@@ -11,6 +11,7 @@ export type AppKoaContextState = {
   accessToken: string;
   isShadow: boolean | null;
   products: Products[] | [];
+  cart: Products[] | [];
 };
 
 export type CustomErrors = {
