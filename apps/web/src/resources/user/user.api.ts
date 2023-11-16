@@ -36,3 +36,13 @@ export function useRemoveFromCart() {
     },
   });
 }
+
+export function useUpdate<T>() {
+  const update = ({ _id, quantity }: Products) => apiService.put(`/users/cart/${_id}`, { quantity });
+
+  return useMutation<T, unknown, Products>(update, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['cart'], data);
+    },
+  });
+}

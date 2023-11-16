@@ -1,20 +1,25 @@
+import { useState, useRef } from 'react';
 import { NumberInputHandlers, Group, ActionIcon, NumberInput, rem } from '@mantine/core';
-import { useState, useRef, memo } from 'react';
-import { cartHelper } from 'services';
 
-interface NumberCellProps {
-  price: number | undefined;
-  // onCalculate: (totalSum: number) => void;
-}
+import queryClient from 'query-client';
+import { userApi } from 'resources/user';
 
-const NumberCell = ({ price }: NumberCellProps) => {
-  const [value, setValue] = useState<number>(1);
+const NumberCell = ({ row, table }: any) => {
+  const [value, setValue] = useState<number | ''>(row.original.quantity!);
   const handlers = useRef<NumberInputHandlers>();
 
-  const handlerPrice = (val: any) => {
+  const {
+    mutate: update,
+  } = userApi.useUpdate();
+
+  const handlerPrice = async (val: number) => {
     setValue(val);
-    cartHelper.calculate(price!, value);
-    console.log('price', cartHelper.calculate(price!, value));
+    await update({ _id: row.original._id, quantity: val }, {
+      onSuccess: (data) => {
+        queryClient.setQueryData(['cart'], data);
+        table.options.meta?.updatePrice(data);
+      },
+    });
   };
 
   return (
@@ -26,17 +31,21 @@ const NumberCell = ({ price }: NumberCellProps) => {
       <NumberInput
         hideControls
         value={value}
-        onChange={(val) => handlerPrice(val)}
+        onChange={(val) => handlerPrice(val as number)}
         handlersRef={handlers}
         max={10}
         min={1}
-        styles={{ input: {
-          width: rem(42),
-          textAlign: 'center',
-          fontSize: rem(16),
-          border: 'none',
-          padding: '0',
-          backgroundColor: 'transparent' } }}
+        defaultValue={1}
+        styles={{
+          input: {
+            width: rem(42),
+            textAlign: 'center',
+            fontSize: rem(16),
+            border: 'none',
+            padding: '0',
+            backgroundColor: 'transparent',
+          },
+        }}
       />
 
       <ActionIcon fz={24} color="gray" onClick={() => handlers.current?.increment()}>
@@ -46,4 +55,4 @@ const NumberCell = ({ price }: NumberCellProps) => {
   );
 };
 
-export default memo(NumberCell);
+export default NumberCell;

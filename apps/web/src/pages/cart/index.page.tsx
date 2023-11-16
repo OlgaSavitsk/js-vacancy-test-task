@@ -1,127 +1,52 @@
-import { useState } from 'react';
-import { Stack, Title, SegmentedControl, Container, Text, Group, Image, Button, CloseButton, Paper, Divider } from '@mantine/core';
-import { ColumnDef } from '@tanstack/react-table';
+import { useMemo, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { NumberCell, Table } from 'components';
+import { Stack, Title, SegmentedControl, Container, Text, Group, Button, Paper, Divider } from '@mantine/core';
+import { loadStripe } from '@stripe/stripe-js';
 import { accountApi } from 'resources/account';
+import { Table } from 'components';
 import { Products } from 'types';
-import { userApi } from 'resources/user';
+import config from 'config';
+import { productsApi } from 'resources/products';
+import { handleError } from 'utils';
 import { useStyles } from './styles';
+import columns from './columns';
 
-interface Columns {
-  cart: ColumnDef<Products, unknown>[],
-  history: ColumnDef<Products, unknown>[],
-}
-
-const columns: Columns = {
-  cart: [
-    {
-      accessorKey: 'item',
-      header: 'Item',
-      size: 520,
-      cell: ({ row }) => (
-        <Group spacing={25}>
-          <Image height={80} width={80} src={row.original.photoUrl} radius={10} />
-          <Text size="md" fw={600}>
-            {row.original.title}
-          </Text>
-        </Group>
-      ),
-    },
-    {
-      accessorKey: 'price',
-      header: 'Unit Price',
-      cell: ({ cell }) => (
-        <span>
-          {cell.getValue<number>().toLocaleString?.('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          })}
-        </span>
-      ),
-    },
-    {
-      accessorKey: 'quantity',
-      header: 'Quantity',
-      cell: ({ row }) => <NumberCell price={row.original.price} />,
-    },
-    {
-      accessorKey: 'remove',
-      header: ' ',
-      cell: ({ row }) => {
-        const {
-          mutate: removeFromCart,
-        } = userApi.useRemoveFromCart();
-
-        const handleRemove = async () => {
-          await removeFromCart(row.original._id);
-        };
-
-        return (
-          <Button
-            leftIcon={<CloseButton size={20} />}
-            variant="subtle"
-            fz={16}
-            color="gray"
-            onClick={handleRemove}
-          >
-            Remove
-          </Button>
-        );
-      },
-    },
-  ],
-  history: [
-    {
-      accessorKey: 'item',
-      header: 'Item',
-      size: 520,
-      cell: ({ row }) => (
-        <Group spacing={25}>
-          <Image height={80} width={80} src={row.original.photoUrl} radius={10} />
-          <Text size="md" fw={600}>
-            {row.original.title}
-          </Text>
-        </Group>
-      ),
-    },
-    {
-      accessorKey: 'price',
-      header: 'Unit Price',
-      cell: ({ cell }) => (
-        <span>
-          {cell.getValue<number>().toLocaleString?.('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          })}
-        </span>
-      ),
-    },
-    {
-      accessorKey: 'date',
-      header: 'Date',
-      accessorFn: (row) => {
-        const sDay = new Date(row.createdOn!);
-        return sDay;
-      },
-      cell: ({ cell }) => (
-        <span>
-          {cell.getValue<Date>()?.toLocaleDateString()}
-        </span>
-      ),
-    },
-  ],
-};
+const stripePromise = loadStripe(
+  config.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+);
 
 const Cart: NextPage = () => {
   const { classes: { root, indicator, label } } = useStyles();
   const [section, setSection] = useState<'cart' | 'history'>('cart');
-  const { data } = accountApi.useGet();
+  const [updatedCart, setUpdatedCart] = useState<Products[]>([]);
+  const { data: account } = accountApi.useGet();
+  const { mutate: payment } = productsApi.usePaymentProduct();
+
+  const dataCart = useMemo(
+    () => (updatedCart.length ? updatedCart : account!.cart),
+    [account, updatedCart],
+  );
+
+  const total = useMemo(
+    () => dataCart
+      .reduce((sum, product) => sum + (parseInt(product.price!, 10) * product.quantity!), 0),
+    [dataCart],
+  );
+
+  const createCheckOutSession = async () => {
+    const stripe = await stripePromise;
+    payment(dataCart, {
+      onSuccess: async (data) => {
+        const result = await stripe!.redirectToCheckout({
+          sessionId: data.sessionId,
+        });
+        if (result.error) {
+          handleError(result.error);
+        }
+      },
+    });
+  };
 
   return (
     <>
@@ -143,14 +68,14 @@ const Cart: NextPage = () => {
               ]}
             />
           </div>
-
         </nav>
         <Group position="apart" align="start" spacing={78} noWrap>
-          {data?.cart ? (
+          {account?.cart ? (
             <>
               <Table
                 columns={columns[section]}
-                data={data?.cart}
+                data={account?.cart}
+                onCartChange={(val) => setUpdatedCart(val)}
               />
               {section === 'cart' && (
                 <Paper radius="xs" p="md" w={315}>
@@ -162,11 +87,11 @@ const Cart: NextPage = () => {
                         Price:
                       </Text>
                       <Text size="lg" fw={700}>
-                        1111
+                        {total}
                       </Text>
                     </Group>
 
-                    <Button variant="filled" color="blue" fullWidth radius="md" size="md">
+                    <Button onClick={createCheckOutSession} variant="filled" color="blue" fullWidth radius="md" size="md">
                       Proceed to Ckeckout
                     </Button>
                   </Stack>

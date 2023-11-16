@@ -2,21 +2,19 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from 'react-query';
-import { showNotification } from '@mantine/notifications';
 import Head from 'next/head';
-import { NextPage } from 'next';
+import { showNotification } from '@mantine/notifications';
 import { Button, TextInput, Stack, Title } from '@mantine/core';
 
 import { handleError } from 'utils';
-
 import { productsApi } from 'resources/products';
 import { accountApi } from 'resources/account';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import PhotoUpload from './components/PhotoUpload';
 
 const schema = z.object({
   title: z.string().min(1, 'Please enter Title').max(100),
-  price: z.number().min(1, 'Please enter Price').max(100),
+  price: z.string().min(1, 'Please enter Price').max(100),
 });
 
 interface UpdateParams extends z.infer<typeof schema> {
@@ -24,7 +22,11 @@ interface UpdateParams extends z.infer<typeof schema> {
   photoUrl: string,
 }
 
-const NewProduct: NextPage = () => {
+interface NewProductProps {
+  onClose: () => void
+}
+
+const NewProduct: FC<NewProductProps> = ({ onClose }: NewProductProps) => {
   const queryClient = useQueryClient();
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(undefined);
 
@@ -48,7 +50,6 @@ const NewProduct: NextPage = () => {
     submitData: UpdateParams,
   ) => create({
     ...submitData,
-    price: Number(submitData.price),
     userId: account!._id,
     photoUrl: photoUrl! }, {
     onSuccess: (data) => {
@@ -58,6 +59,7 @@ const NewProduct: NextPage = () => {
         message: 'Your product has been successfully create.',
         color: 'green',
       });
+      onClose();
     },
     onError: (e) => handleError(e, setError),
   });

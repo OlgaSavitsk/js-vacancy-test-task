@@ -7,8 +7,9 @@ const productsSchema = dbSchema
     _id: z.string(),
     userId: z.string().optional(),
     title: z.string().optional(),
-    price: z.number().optional(),
+    price: z.string().optional(),
     photoUrl: z.string().nullable().optional(),
+    quantity: z.number().default(1),
   })
   .strict();
 

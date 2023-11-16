@@ -6,7 +6,6 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import { accountApi } from 'resources/account';
 
-// eslint-disable-next-line arrow-body-style
 const Products: NextPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const { data: account, isLoading: isListLoading } = accountApi.useGet();
@@ -28,12 +27,12 @@ const Products: NextPage = () => {
           <Modal
             opened={opened}
             onClose={close}
-            title="This is a fullscreen modal"
             fullScreen
             radius={0}
+            withCloseButton={false}
             transitionProps={{ transition: 'fade', duration: 200 }}
           >
-            <NewProduct />
+            <NewProduct onClose={close} />
           </Modal>
           <Paper
             w={271}

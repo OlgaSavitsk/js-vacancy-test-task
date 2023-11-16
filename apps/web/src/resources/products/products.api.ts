@@ -44,3 +44,9 @@ export function useRemoveProduct() {
     },
   });
 }
+
+export function usePaymentProduct<T>() {
+  const payment = (products: T) => apiService.post('/products/payment', { products });
+
+  return useMutation<any, unknown, T>(payment);
+}

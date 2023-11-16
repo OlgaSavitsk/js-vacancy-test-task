@@ -21,15 +21,19 @@ const updateLastRequest = (_id: string) => {
   );
 };
 
-const privateFields = [
-  'passwordHash',
-  'signupToken',
-  'resetPasswordToken',
-];
+const updateQuantity = (_id: string, id: string, quantity: number) => {
+  return service.atomic.updateOne(
+    { _id, cart: { $elemMatch: { _id: id } } },
+    { $set: { 'cart.$.quantity': quantity } },
+  );
+};
+
+const privateFields = ['passwordHash', 'signupToken', 'resetPasswordToken'];
 
 const getPublic = (user: User | null) => _.omit(user, privateFields);
 
 export default Object.assign(service, {
   updateLastRequest,
   getPublic,
+  updateQuantity,
 });

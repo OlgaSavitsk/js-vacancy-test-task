@@ -3,9 +3,10 @@ import create from './actions/create';
 import list from './actions/list';
 import update from './actions/update';
 import remove from './actions/remove';
+import payment from './actions/payment';
 
 const publicRoutes = routeUtil.getRoutes([
-  list
+  list,
 ]);
 
 const privateRoutes = routeUtil.getRoutes([
@@ -13,6 +14,7 @@ const privateRoutes = routeUtil.getRoutes([
   list,
   update,
   remove,
+  payment,
 ]);
 
 const adminRoutes = routeUtil.getRoutes([

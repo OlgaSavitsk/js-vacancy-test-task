@@ -1,17 +1,15 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import { AppKoaContext, Next, AppRouter, User } from "types";
+import { AppKoaContext, Next, AppRouter, User } from 'types';
 
-import { userService } from "resources/user";
+import { userService } from 'resources/user';
 
-import { validateMiddleware } from "middlewares";
-import { productsService } from "resources/products";
-
-import config from "config";
+import { validateMiddleware } from 'middlewares';
+import { productsService } from 'resources/products';
 
 const schema = z.object({
   title: z.string().optional(),
-  price: z.number().optional(),
+  price: z.string().optional(),
   photoUrl: z.string().nullable().optional(),
   userId: z.string().optional(),
 });
@@ -43,9 +41,9 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
   });
 
   await userService.updateOne({ _id: user._id }, (old) => ({
-    products: [...old.products, product]
+    products: [...old.products, product],
   }));
-
+ 
   ctx.body = product;
 }
 

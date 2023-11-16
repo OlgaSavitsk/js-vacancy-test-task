@@ -9,7 +9,7 @@ import { validateMiddleware } from 'middlewares';
 
 const schema = z.object({
   title: z.string().min(1, 'Please enter First name').max(100).optional(),
-  price: z.number().min(1, 'Please enter Last name').max(100).optional(),
+  price: z.string().min(1, 'Please enter Last name').max(100).optional(),
 }).strict();
 
 interface ValidatedData extends z.infer<typeof schema> {

@@ -14,15 +14,13 @@ const tryToAttachUser = async (ctx: AppKoaContext, next: Next) => {
 
   if (userData && userData.userId) {
     const user = await userService.findOne({ _id: userData.userId });
-  //  const cart = await userService.find({ cart: user?.cart });
-    const products = await productsService.find({userId: user?._id})
+    const products = await productsService.find({ userId: user?._id });
 
     if (user) {
       await userService.updateLastRequest(userData.userId);
 
       ctx.state.user = user;
       ctx.state.products = products.results ?? [];
-      // ctx.state.cart = cart.results ?? [];
       ctx.state.isShadow = userData.isShadow || false;
     }
   }

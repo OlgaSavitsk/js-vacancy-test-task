@@ -22,6 +22,7 @@
     "@mantine/modals": "6.0.1",
     "@mantine/next": "6.0.1",
     "@mantine/notifications": "6.0.1",
+    "@stripe/stripe-js": "2.1.6",
     "@svgr/webpack": "6.5.1",
     "@tabler/icons-react": "2.10.0",
     "@tanstack/react-table": "8.7.9",
@@ -39,6 +40,7 @@
     "react-query": "3.39.3",
     "schemas": "workspace:*",
     "socket.io-client": "4.6.1",
+    "stripe": "13.8.0",
     "types": "workspace:*",
     "zod": "3.21.4"
   },

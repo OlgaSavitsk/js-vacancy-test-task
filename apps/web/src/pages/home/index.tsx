@@ -258,17 +258,6 @@ const Home: NextPage = () => {
 
                   ))}
                 </Grid>
-                // <Table
-                //   columns={columns}
-                //   data={data.items}
-                //   dataCount={data.count}
-                //   rowSelection={rowSelection}
-                //   setRowSelection={setRowSelection}
-                //   sorting={sorting}
-                //   onSortingChange={setSorting}
-                //   onPageChange={setParams}
-                //   perPage={PER_PAGE}
-                // />
               ) : (
                 <Container p={75}>
                   <Text size="xl" color="grey">

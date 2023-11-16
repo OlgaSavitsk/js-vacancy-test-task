@@ -1,8 +1,8 @@
+import { FC, memo } from 'react';
 import { Group, Button, Card, Image, Text, ActionIcon, MantineTheme } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconTrash } from '@tabler/icons-react';
 import queryClient from 'query-client';
-import { FC, memo } from 'react';
 import { productsApi } from 'resources/products';
 import { userApi } from 'resources/user';
 import { Products } from 'types';
@@ -33,7 +33,6 @@ const CardProduct: FC<CardProps> = ({ isCreate, product }) => {
           color: 'green',
         });
       },
-      // onError: (e) => handleError(e, setError),
     });
   };
 

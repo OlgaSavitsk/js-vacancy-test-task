@@ -35,7 +35,7 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
         {
           $or: [
             { title: { $regex: regExp } },
-            // { price: { $regex: regExp } },
+            { price: { $regex: regExp } },
             { createdOn: {} },
           ],
         },
