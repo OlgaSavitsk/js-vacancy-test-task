@@ -23,7 +23,15 @@ const NumberCell = ({ row, table }: any) => {
   };
 
   return (
-    <Group spacing={5} display="inline-flex">
+    <Group
+      spacing={5}
+      display="inline-flex"
+      sx={{
+        '@media (max-width: 755px)': {
+          flexDirection: 'column',
+        },
+      }}
+    >
       <ActionIcon fz={24} color="#CFCFCF" onClick={() => handlers.current?.decrement()}>
         –
       </ActionIcon>

@@ -71,7 +71,18 @@ const Cart: NextPage = () => {
             />
           </div>
         </nav>
-        <Group position="apart" align="start" spacing={78} noWrap>
+        <Group
+          position="apart"
+          align="start"
+          spacing={78}
+          noWrap
+          sx={{
+            '@media (max-width: 1030px)': {
+              flexWrap: 'wrap',
+              justifyContent: 'flex-end',
+            },
+          }}
+        >
           {dataCart.length ? (
             <>
               <Table

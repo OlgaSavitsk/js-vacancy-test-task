@@ -5,7 +5,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import {
-  Select,
   TextInput,
   Group,
   Title,
@@ -20,24 +19,24 @@ import {
   Paper,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { IconSearch, IconX, IconChevronDown, IconArrowsDownUp } from '@tabler/icons-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
 
-import { Card, NumberInput, PaginationComponent, Pill } from 'components';
+import { Card, NumberInput, PaginationComponent, Pill, SortControl } from 'components';
 
 import { productsApi } from 'resources/products';
 import { useStyles } from './styles';
 
-interface UsersListParams {
+export interface UsersListParams {
   page?: number;
   perPage?: number;
-  searchValue?: string;
+  searchValue?: string | undefined;
   sort?: {
     createdOn: 'asc' | 'desc';
   };
   price?: {
     paymentFrom: string | null,
     paymentTo: string | null,
-  }
+  } | undefined
 }
 
 const selectOptions: SelectItem[] = [
@@ -60,15 +59,8 @@ const schema = z.object({
 
 export type SalaryParams = z.infer<typeof schema>;
 
-const paymentValue = z.object({
-  price: z.array(z.string().nullable()).optional(),
-  searchValue: z.string().optional(),
-});
-
-export type PaymentRangeValue = z.infer<typeof paymentValue>;
-
 const Home: NextPage = () => {
-  const { classes: { field, button } } = useStyles();
+  const { classes: { button } } = useStyles();
   const methods = useForm<SalaryParams>({
     resolver: zodResolver(schema),
     defaultValues: { paymentFrom: '', paymentTo: '' },
@@ -77,7 +69,6 @@ const Home: NextPage = () => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState(selectOptions[0].value);
   const [params, setParams] = useState<UsersListParams>({});
-  const [filterDate, setFilterDate] = useState<PaymentRangeValue>({});
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
   const handleSort = useCallback((val: string) => {
@@ -111,33 +102,27 @@ const Home: NextPage = () => {
   };
 
   const handleRemove = useCallback((
-    pillValue: string | (string | null)[],
-  ) => (Object.values(filterDate!).forEach((value) => {
+    pillValue: string | {
+      paymentFrom: string | null;
+      paymentTo: string | null;
+    },
+  ) => (Object.values(params!).forEach((value) => {
     if (value === pillValue && typeof pillValue === 'string') {
-      setFilterDate((prev) => ({ ...prev, searchValue: undefined }));
       setSearch('');
-    }
-    if (value === pillValue && Array.isArray(pillValue)) {
-      setFilterDate((prev) => ({ ...prev, price: undefined }));
+    } else if (value === pillValue) {
       methods.reset();
       setParams((prev) => ({ ...prev, price: undefined }));
     }
-  })), [filterDate, methods]);
+  })), [methods, params]);
 
   useLayoutEffect(() => {
     setParams((prev) => ({
       ...prev,
       page: 1,
-      searchValue: debouncedSearch,
+      searchValue: debouncedSearch || undefined,
       perPage: PER_PAGE,
     }));
-    setFilterDate({
-      price: params.price
-        ? [params.price.paymentFrom, params.price.paymentTo]
-        : undefined,
-      searchValue: debouncedSearch || undefined,
-    });
-  }, [debouncedSearch, params.price]);
+  }, [debouncedSearch]);
 
   const { data, isLoading: isListLoading } = productsApi.useList(params);
 
@@ -164,7 +149,6 @@ const Home: NextPage = () => {
                   alignSelf: 'start',
                   '@media (max-width: 755px)': {
                     maxWidth: '100%',
-                    width: '100%',
                   },
                 }}
               >
@@ -228,7 +212,6 @@ const Home: NextPage = () => {
                       <IconX color="gray" />
                     </UnstyledButton>
                   ) : null}
-                // sx={{ width: '350px' }}
                 />
               </Skeleton>
               <Group position="apart">
@@ -243,43 +226,47 @@ const Home: NextPage = () => {
                       {' '}
                       results
                     </Title>
-                    {Object.values(filterDate!).map((item) => (
-                      item && (
-                        <Pill
-                          value={item}
-                          onRemove={() => handleRemove(item)}
-                        />
-                      )
-                    ))}
+                    {Object.values({ price: params.price, searchValue: params.searchValue })
+                      .map((item) => (
+                        item && (
+                          <Pill
+                            value={item}
+                            onRemove={() => handleRemove(item)}
+                          />
+                        )
+                      ))}
                   </Skeleton>
                 </Stack>
-                <Select
-                  size="md"
-                  data={selectOptions}
-                  value={sortBy}
+                <SortControl
+                  selectOptions={selectOptions}
+                  sortBy={sortBy}
                   onChange={handleSort}
-                  rightSection={<IconChevronDown color="grey" />}
-                  icon={<IconArrowsDownUp size={20} color="gray" />}
-                  classNames={{ root: field }}
-                  withinPortal={false}
-                  variant="unstyled"
-                  transitionProps={{
-                    transition: 'pop-bottom-right',
-                    duration: 210,
-                    timingFunction: 'ease-out',
-                  }}
                 />
               </Group>
               {data?.products.length ? (
-                <Grid gutter={20}>
+                <Grid
+                  gutter={20}
+                  sx={{
+                    '@media (max-width: 755px)': {
+                      justifyContent: 'center',
+                      width: '100%',
+                    },
+                  }}
+                >
                   {data.products.map((item) => (
-                    <Grid.Col span={4}>
+                    <Grid.Col sm={12} md={6} lg={4}>
                       <Skeleton
                         key={item._id}
                         radius="sm"
                         visible={isListLoading}
                         width="auto"
                         height="auto"
+                        sx={{
+                          '@media (max-width: 755px)': {
+                            display: 'flex',
+                            justifyContent: 'center',
+                          },
+                        }}
                       >
                         <Card product={item} />
                       </Skeleton>

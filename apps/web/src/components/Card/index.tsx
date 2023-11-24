@@ -58,11 +58,10 @@ const CardProduct: FC<CardProps> = ({ isCreate, product }) => {
           </Button>
         </Group>
       </Modal>
-      <Card shadow="sm" padding="lg" radius="lg" pb={isCreate ? 0 : 'lg'} withBorder>
+      <Card shadow="sm" padding="lg" radius="lg" pb={isCreate ? 0 : 'lg'} withBorder sx={{ maxWidth: isCreate ? 271 : 356, width: '100%' }}>
         <Card.Section pos="relative">
           <Image
             src={product.photoUrl}
-            width={isCreate ? 271 : 356}
             height={isCreate ? 174 : 218}
             alt="Product"
           />

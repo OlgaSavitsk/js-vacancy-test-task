@@ -1,4 +1,5 @@
-import { Button, CloseButton, Image, Group, Text } from '@mantine/core';
+import { Button, CloseButton, Image, Group, Text, MediaQuery } from '@mantine/core';
+import { IconTrash } from '@tabler/icons-react';
 import { ColumnDef } from '@tanstack/react-table';
 import { NumberCell } from 'components';
 import { userApi } from 'resources/user';
@@ -49,7 +50,7 @@ const columns: Columns = {
       cell: NumberCell,
     },
     {
-      accessorKey: 'remove',
+      accessorKey: '',
       header: ' ',
       cell: ({ row }) => {
         const { mutate: removeFromCart } = userApi.useRemoveFromCart();
@@ -59,15 +60,29 @@ const columns: Columns = {
         };
 
         return (
-          <Button
-            leftIcon={<CloseButton size={20} />}
-            variant="subtle"
-            fz={16}
-            color="gray"
-            onClick={handleRemove}
-          >
-            Remove
-          </Button>
+          <>
+            <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+              <Button
+                leftIcon={<CloseButton size={20} />}
+                variant="subtle"
+                fz={16}
+                color="gray"
+                onClick={handleRemove}
+              >
+                Remove
+              </Button>
+            </MediaQuery>
+            <MediaQuery smallerThan="sm" styles={{ display: 'flex' }}>
+              <Button
+                leftIcon={<IconTrash size={20} />}
+                variant="subtle"
+                fz={16}
+                color="gray"
+                onClick={handleRemove}
+                display="none"
+              />
+            </MediaQuery>
+          </>
         );
       },
     },

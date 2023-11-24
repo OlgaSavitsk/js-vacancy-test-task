@@ -6,7 +6,6 @@ type CellData = {
 };
 
 interface TheadProps {
-  // isSortable: boolean,
   headerGroups: HeaderGroup<CellData>[];
   flexRender: (
     template: ColumnDefTemplate<HeaderContext<CellData, any>> | undefined,
@@ -28,7 +27,7 @@ const Thead: FC<TheadProps> = ({ headerGroups, flexRender }) => (
               fontWeight: '400',
               fontSize: '16px',
               color: 'gray',
-              paddingBottom: 0,
+              padding: 0,
             }}
           >
             {!header.isPlaceholder

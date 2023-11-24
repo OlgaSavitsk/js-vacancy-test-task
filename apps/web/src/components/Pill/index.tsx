@@ -4,12 +4,18 @@ import { ActionIcon, Badge, MantineTheme, rem } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 interface PillProps extends React.ComponentPropsWithoutRef<'div'> {
-  value: (string | null)[] | string;
+  value: string | {
+    paymentFrom: string | null;
+    paymentTo: string | null;
+  } | undefined
   onRemove?(): void;
 }
 
 const Pill: FC<PillProps> = ({ value, onRemove }) => {
-  const [paymentFrom, paymentTo] = value as (string)[];
+  const { paymentFrom, paymentTo } = value as {
+    paymentFrom: string | null;
+    paymentTo: string | null;
+  };
   const paymentRange = (
     <>
       {paymentFrom && `$${paymentFrom}`}
@@ -36,7 +42,7 @@ const Pill: FC<PillProps> = ({ value, onRemove }) => {
         </ActionIcon>
       )}
     >
-      {Array.isArray(value) ? paymentRange : value}
+      {typeof value === 'string' ? value : paymentRange}
     </Badge>
   );
 };
