@@ -12,6 +12,6 @@ export {
   cloudStorageService,
   emailService,
   googleService,
-  rateLimitService,
   socketService,
+  rateLimitService,
 };
