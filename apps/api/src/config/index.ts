@@ -12,7 +12,6 @@ const schema = z.object({
   PORT: z.coerce.number().optional().default(3001),
   MONGO_URI: z.string(),
   MONGO_DB_NAME: z.string(),
-  REDIS_URI: z.string(),
   API_URL: z.string(),
   WEB_URL: z.string(),
   SENDGRID_API_KEY: z.string().optional(),
