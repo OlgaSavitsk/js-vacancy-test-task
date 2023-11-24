@@ -16,7 +16,7 @@ import requestLogger from 'koa-logger';
 
 import { AppKoa } from 'types';
 
-// import { socketService } from 'services';
+import { socketService } from 'services';
 
 import config from 'config';
 import logger from 'logger';
@@ -51,7 +51,7 @@ const app = initKoa();
 
   await Promise.all([
     ioEmitter.initClient(),
-    // socketService(server),
+    socketService(server),
   ]);
 
   server.listen(config.PORT, () => {
