@@ -57,7 +57,8 @@ const schema = z.object({
   paymentTo: z.string().nullable(),
 });
 
-export type SalaryParams = z.infer<typeof schema>;
+type SalaryParams = z.infer<typeof schema>;
+type FilterParams = SalaryParams | string;
 
 const Home: NextPage = () => {
   const { classes: { button } } = useStyles();
@@ -102,10 +103,7 @@ const Home: NextPage = () => {
   };
 
   const handleRemove = useCallback((
-    pillValue: string | {
-      paymentFrom: string | null;
-      paymentTo: string | null;
-    },
+    pillValue: FilterParams,
   ) => (Object.values(params!).forEach((value) => {
     if (value === pillValue && typeof pillValue === 'string') {
       setSearch('');

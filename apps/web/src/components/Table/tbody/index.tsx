@@ -24,6 +24,7 @@ const Tbody: FC<TbodyProps> = ({ rows, flexRender }) => (
             key={cell.id}
             style={{
               textAlign: cell.id === 'item' ? 'left' : 'right',
+              padding: '20px 0px',
             }}
           >
             {flexRender(cell.column.columnDef.cell, cell.getContext())}

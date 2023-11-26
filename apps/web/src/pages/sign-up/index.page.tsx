@@ -15,7 +15,6 @@ import {
   SimpleGrid,
 } from '@mantine/core';
 
-// import config from 'config';
 import { RoutePath } from 'routes';
 import { handleError } from 'utils';
 import { Link } from 'components';

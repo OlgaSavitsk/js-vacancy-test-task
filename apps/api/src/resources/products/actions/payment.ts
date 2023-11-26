@@ -29,7 +29,7 @@ const signInGoogleWithCode = async (ctx: AppKoaContext<ValidatedData>) => {
     const prod = await stripe.products.create({
       name: product.title as string,
       default_price_data: {
-        unit_amount: parseInt(product.price as string, 10) * 100,
+        unit_amount: product.price! * 100,
         currency: 'usd',
       },
     });

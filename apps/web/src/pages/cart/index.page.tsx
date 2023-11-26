@@ -56,7 +56,6 @@ const Cart: NextPage = () => {
         <title>Cart</title>
       </Head>
       <Stack>
-        <Title order={4}>Cart</Title>
         <nav>
           <div>
             <SegmentedControl

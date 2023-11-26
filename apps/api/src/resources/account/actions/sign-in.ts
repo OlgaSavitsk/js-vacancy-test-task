@@ -40,12 +40,20 @@ async function validator(ctx: AppKoaContext<ValidatedData>, next: Next) {
 async function handler(ctx: AppKoaContext<ValidatedData>) {
   const { user } = ctx.validatedData;
 
+  await userService.updateOne(
+    { _id: user._id },
+    () => ({
+      isEmailVerified: true,
+    }),
+  );
+
   await Promise.all([
     userService.updateLastRequest(user._id),
     authService.setTokens(ctx, user._id),
   ]);
 
   ctx.body = userService.getPublic(user);
+
 }
 
 export default (router: AppRouter) => {
