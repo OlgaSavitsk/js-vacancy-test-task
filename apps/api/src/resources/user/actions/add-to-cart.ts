@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import _ from 'lodash';
 
 import { AppKoaContext, Next, AppRouter, Products } from 'types';
 import { productsSchema } from 'schemas';
@@ -6,10 +7,9 @@ import { productsSchema } from 'schemas';
 import { userService } from 'resources/user';
 
 import { validateMiddleware } from 'middlewares';
-import _ from 'lodash';
 
 const schema = z.object({
-  product: productsSchema,
+  product: productsSchema.nullable(),
 });
 
 interface ValidatedData extends z.infer<typeof schema> {
@@ -17,14 +17,26 @@ interface ValidatedData extends z.infer<typeof schema> {
 }
 
 async function validator(ctx: AppKoaContext<ValidatedData>, next: Next) {
-  const {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    product: { _id, userId },
-  } = ctx.validatedData;
+  const { product } = ctx.validatedData;
+  const { user } = ctx.state;
+
+  if (_.isEmpty(product)) {
+    await userService.updateMany({ _id: user._id }, () => ({
+      cart: [],
+    }));
+
+    for (const item of user.cart) {
+      await userService.updateProductStatus(user._id, item._id);
+    }
+
+    ctx.body = user.cart;
+
+    return;
+  }
 
   const productInCart = await userService.findOne({
-    _id: userId,
-    cart: { $elemMatch: { _id: _id } },
+    _id: user._id,
+    cart: { $elemMatch: { _id: product._id } },
   });
 
   if (productInCart) ctx.validatedData.cartProducts = productInCart.cart;
@@ -34,14 +46,17 @@ async function validator(ctx: AppKoaContext<ValidatedData>, next: Next) {
 
 async function handler(ctx: AppKoaContext<ValidatedData>) {
   const { cartProducts, product } = ctx.validatedData;
+  const { user } = ctx.state;
 
-  if (cartProducts) {
+  if (cartProducts && product) {
     const index = _.findIndex(cartProducts, ['_id', product._id]);
-    userService.increaseQuantity(product.userId, cartProducts[index]);
+    userService.increaseQuantity(user._id, cartProducts[index]);
   } else {
-    await userService.updateMany({ _id: product.userId }, ({ cart }) => ({
-      cart: [...cart, { ...product, quantity: 1 }],
-    }));
+    if (product) {
+      await userService.updateMany({ _id: user._id }, ({ cart }) => ({
+        cart: [...cart, { ...product, quantity: 1 }],
+      }));
+    }
   }
 
   ctx.body = product;

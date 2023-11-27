@@ -17,6 +17,7 @@ import {
   Grid,
   CloseButton,
   Paper,
+  LoadingOverlay,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch, IconX } from '@tabler/icons-react';
@@ -53,18 +54,19 @@ const selectOptions: SelectItem[] = [
 const PER_PAGE = 6;
 
 const schema = z.object({
-  paymentFrom: z.string().nullable(),
-  paymentTo: z.string().nullable(),
+  paymentFrom: z.string().transform((val) => val.replace(/[^\d.-]/g, '')).nullable(),
+  paymentTo: z.string().transform((val) => val.replace(/[^\d.-]/g, '')).nullable(),
 });
 
-type SalaryParams = z.infer<typeof schema>;
-type FilterParams = SalaryParams | string;
+type FormInputData = z.input<typeof schema>;
+type FormOutputData = z.output<typeof schema>;
+type FilterParams = FormOutputData | string;
 
 const Home: NextPage = () => {
   const { classes: { button } } = useStyles();
-  const methods = useForm<SalaryParams>({
-    resolver: zodResolver(schema),
+  const methods = useForm<FormInputData, FormOutputData>({
     defaultValues: { paymentFrom: '', paymentTo: '' },
+    resolver: zodResolver(schema),
   });
 
   const [search, setSearch] = useState<string>('');
@@ -89,12 +91,12 @@ const Home: NextPage = () => {
     setParams((prev) => ({ ...prev, price: undefined }));
   }, [methods]);
 
-  const onSubmit = ({ paymentFrom, paymentTo }: SalaryParams) => {
+  const onSubmit = ({ paymentFrom, paymentTo }: FormOutputData) => {
     setParams((prev) => ({
       ...prev,
       price: {
-        paymentFrom: paymentFrom ? paymentFrom.replace(/\$/g, '') : null,
-        paymentTo: paymentTo ? paymentTo.replace(/\$/g, '') : null,
+        paymentFrom: paymentFrom || null,
+        paymentTo: paymentTo || null,
       },
     }));
     if (!paymentFrom && !paymentTo) {
@@ -272,11 +274,14 @@ const Home: NextPage = () => {
                   ))}
                 </Grid>
               ) : (
-                <Container p={75}>
-                  <Text size="xl" color="grey">
-                    No results found, try to adjust your search.
-                  </Text>
-                </Container>
+                <Group pos="relative">
+                  {isListLoading && <LoadingOverlay visible={isListLoading} overlayBlur={2} loaderProps={{ size: 'lg', variant: 'dots' }} />}
+                  <Container p={75}>
+                    <Text size="xl" color="grey">
+                      No results found, try to adjust your search.
+                    </Text>
+                  </Container>
+                </Group>
               )}
             </Stack>
           </Grid.Col>

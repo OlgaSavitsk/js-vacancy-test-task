@@ -20,7 +20,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => (
         backgroundColor: theme.colors.gray[0],
       },
       main: {
-        padding: '48px',
+        padding: '42px',
         paddingTop: '104px',
       },
     })}

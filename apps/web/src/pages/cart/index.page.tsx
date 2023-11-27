@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { Stack, Title, SegmentedControl, Text, Group, Button, Paper, Divider } from '@mantine/core';
+import { Stack, Title, SegmentedControl, Text, Group, Button, Paper, Divider, LoadingOverlay } from '@mantine/core';
 import { loadStripe } from '@stripe/stripe-js';
 
 import { accountApi } from 'resources/account';
@@ -22,7 +22,7 @@ const Cart: NextPage = () => {
   const { classes: { root, indicator, label } } = useStyles();
   const [section, setSection] = useState<'cart' | 'history'>('cart');
   const [updatedPrice, setUpdatedPrice] = useState<Products[]>([]);
-  const { data: account } = accountApi.useGet();
+  const { data: account, isLoading: isCartLoading } = accountApi.useGet();
   const { mutate: payment } = productsApi.usePaymentProduct();
 
   const dataCart = useMemo(
@@ -72,6 +72,7 @@ const Cart: NextPage = () => {
         </nav>
         <Group
           position="apart"
+          pos="relative"
           align="start"
           spacing={78}
           noWrap
@@ -82,6 +83,8 @@ const Cart: NextPage = () => {
             },
           }}
         >
+          {isCartLoading
+          && <LoadingOverlay visible={isCartLoading} overlayBlur={2} loaderProps={{ size: 'lg', variant: 'dots' }} />}
           {dataCart.length ? (
             <>
               <Table

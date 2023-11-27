@@ -29,7 +29,7 @@ const signInGoogleWithCode = async (ctx: AppKoaContext<ValidatedData>) => {
     const prod = await stripe.products.create({
       name: product.title as string,
       default_price_data: {
-        unit_amount: product.price! * 100,
+        unit_amount: (product.price as number) * 100,
         currency: 'usd',
       },
     });
@@ -45,6 +45,7 @@ const signInGoogleWithCode = async (ctx: AppKoaContext<ValidatedData>) => {
       success_url: `${ctx.request.headers.origin}/success/?success=true`,
       cancel_url: `${ctx.request.headers.origin}/failed/?canceled=true`,
     });
+    
     ctx.body = { sessionId: session.id };
   }
 };

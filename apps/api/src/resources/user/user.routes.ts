@@ -7,7 +7,6 @@ import remove from './actions/remove';
 import update from './actions/update';
 
 const publicRoutes = routeUtil.getRoutes([
-  addToCart,
 ]);
 
 const privateRoutes = routeUtil.getRoutes([

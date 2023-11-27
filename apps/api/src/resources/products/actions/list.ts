@@ -12,9 +12,9 @@ const schema = z.object({
     createdOn: z.enum(['asc', 'desc']),
   }).default({ createdOn: 'desc' }),
   price: z.object({
-    paymentFrom: z.string().optional(),
-    paymentTo: z.string().optional(),
-  }).nullable().default(null),
+    paymentFrom: z.string().transform((a) => parseInt(a, 10)).optional(),
+    paymentTo: z.string().transform((a) => parseInt(a, 10)).optional(),
+  }).optional(),
   searchValue: z.string().default(''),
 });
 
@@ -36,14 +36,13 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
         {
           $or: [
             { title: { $regex: regExp } },
-            { price: { $regex: regExp } },
             { createdOn: {} },
           ],
         },
         price ? {
           price: {
-            $gte: paymentFrom && parseInt(paymentFrom, 10),
-            $lte: paymentTo && parseInt(paymentTo, 10),
+            $gte: paymentFrom,
+            $lte: paymentTo,
           },
         } : {},
       ],

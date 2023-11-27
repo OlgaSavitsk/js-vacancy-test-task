@@ -39,7 +39,6 @@ const PaginationComponent: FC<TableProps> = ({
       total={dataCount ? Math.ceil((dataCount || 0) / perPage) : -1}
       value={pagination.pageIndex}
       onChange={onPageChangeHandler}
-      siblings={1}
       color="black"
     />
   ), [dataCount, onPageChangeHandler, pagination, perPage]);

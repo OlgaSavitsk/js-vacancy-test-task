@@ -26,8 +26,9 @@ async function validator(ctx: AppKoaContext<ValidatedData>, next: Next) {
   if (!user) return (ctx.body = {});
 
   ctx.validatedData.user = user;
+
   ctx.assertClientError(!isProductExists, {
-    title: 'Product with this title is already existed',
+    title: 'Product with this title already existed',
   });
 
   await next();
@@ -41,6 +42,7 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
     price,
     photoUrl: photoUrl,
     userId: user._id,
+    status: 'On sale',
   });
 
   await userService.updateOne({ _id: user._id }, (old) => ({

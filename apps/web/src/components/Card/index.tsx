@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import { Group, Button, Card, Image, Text, ActionIcon, MantineTheme, Modal } from '@mantine/core';
+import { Group, Button, Card, Text, ActionIcon, MantineTheme, Image, Modal, Badge } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { IconTrash } from '@tabler/icons-react';
@@ -9,6 +9,7 @@ import { Products } from 'types';
 import queryClient from 'query-client';
 import { productsApi } from 'resources/products';
 import { userApi } from 'resources/user';
+import { accountApi } from 'resources/account';
 
 interface CardProps {
   isCreate?: boolean;
@@ -18,6 +19,7 @@ interface CardProps {
 const CardProduct: FC<CardProps> = ({ isCreate, product }) => {
   const [opened, { close, open }] = useDisclosure(false);
   const { mutate: removeProduct } = productsApi.useRemoveProduct();
+  const { mutate: removeProfilePhoto } = accountApi.useRemoveAvatar();
 
   const {
     mutate: addToCart,
@@ -25,6 +27,7 @@ const CardProduct: FC<CardProps> = ({ isCreate, product }) => {
 
   const handlerProductRemove = async () => {
     await removeProduct(product._id);
+    await removeProfilePhoto({ photoUrl: product.photoUrl });
   };
 
   const handlerAddToCart = async () => {
@@ -59,27 +62,45 @@ const CardProduct: FC<CardProps> = ({ isCreate, product }) => {
         </Group>
       </Modal>
       <Card shadow="sm" padding="lg" radius="lg" pb={isCreate ? 0 : 'lg'} withBorder sx={{ maxWidth: isCreate ? 271 : 356, width: '100%' }}>
-        <Card.Section pos="relative">
+        <Card.Section
+          style={{
+            position: 'relative',
+          }}
+        >
           <Image
             src={product.photoUrl}
             height={isCreate ? 174 : 218}
             alt="Product"
           />
           {isCreate && (
-            <ActionIcon
-              size="lg"
-              radius="md"
-              variant="default"
-              aria-label="Remove"
-              sx={(theme: MantineTheme) => ({
-                position: 'absolute',
-                top: theme.spacing.sm,
-                right: theme.spacing.sm,
-              })}
-              onClick={open}
-            >
-              <IconTrash color="gray" />
-            </ActionIcon>
+            <Group>
+              <ActionIcon
+                size="lg"
+                radius="md"
+                variant="default"
+                aria-label="Remove"
+                sx={(theme: MantineTheme) => ({
+                  position: 'absolute',
+                  top: theme.spacing.sm,
+                  right: theme.spacing.sm,
+                })}
+                onClick={open}
+              >
+                <IconTrash color="gray" />
+              </ActionIcon>
+              <Badge
+                color={product.status === 'On sale' ? 'yellow' : 'teal'}
+                size="lg"
+                radius="md"
+                sx={(theme: MantineTheme) => ({
+                  position: 'absolute',
+                  bottom: theme.spacing.sm,
+                  right: theme.spacing.sm,
+                })}
+              >
+                {product.status}
+              </Badge>
+            </Group>
           )}
         </Card.Section>
 

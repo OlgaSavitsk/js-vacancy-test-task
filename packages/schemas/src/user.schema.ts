@@ -1,17 +1,7 @@
 import { z } from 'zod';
+import { productsSchema } from './products.schema';
 
 import dbSchema from './db.schema';
-
-const productsSchema = dbSchema
-  .extend({
-    _id: z.string(),
-    userId: z.string(),
-    title: z.string().optional(),
-    price: z.coerce.number().optional(),
-    photoUrl: z.string().nullable().optional(),
-    quantity: z.number().optional(),
-  })
-  .strict();
 
 export const userSchema = dbSchema
   .extend({

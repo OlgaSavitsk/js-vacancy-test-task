@@ -11,6 +11,7 @@ import { RoutePath } from 'routes';
 
 const Products: NextPage = () => {
   const { data: account, isLoading: isListLoading } = accountApi.useGet();
+
   const handleClick = useCallback(() => {
     router.push(RoutePath.NewProduct);
   }, []);

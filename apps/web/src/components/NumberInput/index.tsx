@@ -11,7 +11,7 @@ interface NumberInput extends NumericFormatProps {
   data?: string,
   label?: string,
   placeholder?: string,
-  name?: 'paymentFrom' | 'paymentTo',
+  name?: 'paymentFrom' | 'paymentTo' | 'price',
   register?: UseFormRegister<FieldValues>,
   control?: Control<FieldValues>,
 }

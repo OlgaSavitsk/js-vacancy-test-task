@@ -1,8 +1,9 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from 'react-query';
+import { NextPage } from 'next';
 import router from 'next/router';
 import Head from 'next/head';
 
@@ -17,25 +18,21 @@ import { RoutePath } from 'routes';
 import PhotoUpload from './components/PhotoUpload';
 
 const schema = z.object({
-  title: z.string().min(1, 'Please enter Title').max(100),
-  price: z.coerce.number(),
+  title: z.string().min(1, 'Please enter Title').max(50),
+  price: z.union([z.number(), z.string()]).pipe(z.coerce.number().gte(1, 'Please enter Title')),
   photoUrl: z.string({
     required_error: 'Photo field is required',
   }),
 });
 
-type UpdateParams = z.infer<typeof schema> & {
+export type UpdateParams = z.infer<typeof schema> & {
   userId: string,
   credentials?: string
 };
 
-interface NewProductProps {
-  onClose: () => void
-}
-
-const NewProduct: FC<NewProductProps> = () => {
+const NewProduct: NextPage = () => {
   const queryClient = useQueryClient();
-  const [value, setPrice] = useState<number | ''>('');
+  const [price, setPrice] = useState<number | ''>(0);
 
   const { data: account } = accountApi.useGet();
 
@@ -44,7 +41,6 @@ const NewProduct: FC<NewProductProps> = () => {
     handleSubmit,
     setValue,
     getValues,
-    control,
     formState: { errors },
     setError,
   } = useForm<UpdateParams>({
@@ -60,6 +56,7 @@ const NewProduct: FC<NewProductProps> = () => {
     submitData: UpdateParams,
   ) => create({
     ...submitData,
+    price: price as number,
     userId: account!._id,
   }, {
     onSuccess: (data) => {
@@ -89,16 +86,10 @@ const NewProduct: FC<NewProductProps> = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Stack spacing={20}>
-            <Controller
-              {...register('photoUrl')}
-              control={control}
-              name="photoUrl"
-              render={() => (
-                <PhotoUpload
-                  onUpload={(val) => setValue('photoUrl', val)}
-                  error={getValues().photoUrl ? '' : errors.photoUrl?.message}
-                />
-              )}
+            <PhotoUpload
+              register={register}
+              onUpload={(val) => setValue('photoUrl', val)}
+              error={getValues().photoUrl ? '' : errors.photoUrl?.message}
             />
             <TextInput
               {...register('title')}
@@ -118,15 +109,14 @@ const NewProduct: FC<NewProductProps> = () => {
               {...register('price')}
               label="Price"
               placeholder="Enter price of the product"
-              value={value}
               onChange={setPrice}
-              max={100}
-              min={1}
+              min={0}
+              max={10000}
               hideControls
               labelProps={{
                 'data-invalid': errors.price,
               }}
-              error={value ? '' : errors.price?.message}
+              error={price ? '' : errors.price?.message}
             />
             {errors!.credentials && (
               <Alert icon={<IconAlertCircle size={16} />} color="red">

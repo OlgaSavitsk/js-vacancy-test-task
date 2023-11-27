@@ -35,6 +35,13 @@ const updateQuantity = (_id: string, productId: string, quantity: number) => {
   );
 };
 
+const updateProductStatus = (userId: string, productId: string) => {
+  return service.atomic.updateMany(
+    { _id: userId, products: { $elemMatch: { _id: productId } } },
+    { $set: { 'products.$.status': 'Sold' } },
+  );
+};
+
 const increaseQuantity = (_id: string, product: Products) => {
   const { quantity } = product;
 
@@ -58,6 +65,7 @@ export default Object.assign(service, {
   updateLastRequest,
   getPublic,
   updateQuantity,
+  updateProductStatus,
   increaseQuantity,
   updateCart,
 });

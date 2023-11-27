@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useLayoutEffect } from 'react';
 import Head from 'next/head';
 import router from 'next/router';
 import { NextPage } from 'next';
@@ -6,11 +6,23 @@ import { Stack, Title, Text, Button } from '@mantine/core';
 
 import { RoutePath } from 'routes';
 import { PartyIcon } from 'public/icons';
+import { userApi } from 'resources/user';
 
 const SuccessPage: NextPage = () => {
+  const {
+    mutate: addToCart,
+  } = userApi.useAddToCart();
+
   const handleClick = useCallback(() => {
     router.push(RoutePath.Cart);
   }, []);
+
+  useLayoutEffect(() => {
+    async function fetchData() {
+      await addToCart({ product: null });
+    }
+    fetchData();
+  }, [addToCart]);
 
   return (
     <>

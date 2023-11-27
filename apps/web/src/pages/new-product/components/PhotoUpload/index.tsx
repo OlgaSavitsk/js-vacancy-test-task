@@ -1,4 +1,5 @@
 import { memo, useState } from 'react';
+import { UseFormRegister } from 'react-hook-form';
 import { Group, Button, Stack, FileButton, Image, Skeleton } from '@mantine/core';
 import { FileWithPath } from '@mantine/dropzone';
 
@@ -6,14 +7,16 @@ import { accountApi } from 'resources/account';
 import { handleError } from 'utils';
 
 import { DefaultPhotoIcon } from 'public/icons';
+import { ProductCreateParams } from 'schemas';
 import { useStyles } from './styles';
 
 interface PhotoUploadProps {
+  register: UseFormRegister<ProductCreateParams>
   onUpload: (photoUrl: string) => void
   error: string | undefined
 }
 
-const PhotoUpload = ({ onUpload, error }: PhotoUploadProps) => {
+const PhotoUpload = ({ register, onUpload, error }: PhotoUploadProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const { classes } = useStyles();
@@ -53,6 +56,7 @@ const PhotoUpload = ({ onUpload, error }: PhotoUploadProps) => {
         onSuccess: (response: any) => {
           if (response.photoUrl) setPhotoUrl(response.photoUrl);
           onUpload(response.photoUrl);
+          register('photoUrl', response.photoUrl);
         },
         onError: (err) => handleError(err),
       });
@@ -95,7 +99,6 @@ const PhotoUpload = ({ onUpload, error }: PhotoUploadProps) => {
             </div>
             {photoUrl && (
               <Button
-                type="submit"
                 variant="subtle"
                 onClick={handlerPhotoRemove}
                 size="sm"
@@ -126,7 +129,7 @@ const PhotoUpload = ({ onUpload, error }: PhotoUploadProps) => {
         </Group>
       </Stack>
       {(!!errorMessage || !!error)
-      && <p className={classes.errorMessage}>{errorMessage || error}</p>}
+        && <p className={classes.errorMessage}>{errorMessage || error}</p>}
     </>
   );
 };
