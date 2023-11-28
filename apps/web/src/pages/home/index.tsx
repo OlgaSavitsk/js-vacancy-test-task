@@ -229,10 +229,10 @@ const Home: NextPage = () => {
                     {Object.values({ price: params.price, searchValue: params.searchValue })
                       .map((item) => (
                         item && (
-                        <Pill
-                          value={item}
-                          onRemove={() => handleRemove(item)}
-                        />
+                          <Pill
+                            value={item}
+                            onRemove={() => handleRemove(item)}
+                          />
                         )
                       ))}
                   </Skeleton>
@@ -247,14 +247,12 @@ const Home: NextPage = () => {
                 <Grid
                   gutter={20}
                   sx={{
-                    position: 'relative',
                     '@media (max-width: 755px)': {
                       justifyContent: 'center',
                       width: '100%',
                     },
                   }}
                 >
-                  <LoadingOverlay visible={isListLoading} overlayBlur={2} loaderProps={{ size: 'lg', variant: 'dots' }} />
                   {data.products.map((item) => (
                     <Grid.Col sm={12} md={6} lg={4}>
                       <Skeleton
@@ -276,13 +274,14 @@ const Home: NextPage = () => {
                   ))}
                 </Grid>
               ) : (
-                <Group>
+                <Group pos="relative">
+                  <LoadingOverlay visible={isListLoading} overlayBlur={2} loaderProps={{ size: 'lg', variant: 'dots' }} />
                   {!isListLoading && (
-                  <Container p={75}>
-                    <Text size="xl" color="grey">
-                      No results found, try to adjust your search.
-                    </Text>
-                  </Container>
+                    <Container p={75}>
+                      <Text size="xl" color="grey">
+                        No results found, try to adjust your search.
+                      </Text>
+                    </Container>
                   )}
                 </Group>
               )}
