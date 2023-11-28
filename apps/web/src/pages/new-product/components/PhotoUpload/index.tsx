@@ -128,7 +128,7 @@ const PhotoUpload = ({ register, onUpload, error }: PhotoUploadProps) => {
           </Stack>
         </Group>
       </Stack>
-      {(!!errorMessage || !!error)
+      {(!!errorMessage || !photoUrl)
         && <p className={classes.errorMessage}>{errorMessage || error}</p>}
     </>
   );

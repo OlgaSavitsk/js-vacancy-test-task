@@ -1,6 +1,9 @@
 import queryClient from 'query-client';
+
 import { useMutation, useQuery } from 'react-query';
+
 import { apiService } from 'services';
+
 import { Products } from 'types';
 
 export function useGet(options?: {}) {
@@ -49,4 +52,10 @@ export function usePaymentProduct<T>() {
   const payment = (products: T) => apiService.post('/products/payment', { products });
 
   return useMutation<any, unknown, T>(payment);
+}
+
+export function useUpdatePaymentProduct<T>() {
+  const updateProduct = (data: T) => apiService.post('/products/payment-success', data);
+
+  return useMutation<Products, unknown, T>(updateProduct);
 }

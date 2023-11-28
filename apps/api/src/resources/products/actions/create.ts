@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AppKoaContext, Next, AppRouter, User } from 'types';
+import { AppKoaContext, Next, AppRouter, User, ProductsType } from 'types';
 
 import { validateMiddleware } from 'middlewares';
 
@@ -28,7 +28,7 @@ async function validator(ctx: AppKoaContext<ValidatedData>, next: Next) {
   ctx.validatedData.user = user;
 
   ctx.assertClientError(!isProductExists, {
-    title: 'Product with this title already existed',
+    title: 'Product with this title already exists',
   });
 
   await next();
@@ -42,7 +42,7 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
     price,
     photoUrl: photoUrl,
     userId: user._id,
-    status: 'On sale',
+    status: ProductsType.OnSale,
   });
 
   await userService.updateOne({ _id: user._id }, (old) => ({

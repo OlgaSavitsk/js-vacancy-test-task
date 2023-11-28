@@ -10,7 +10,6 @@ import config from 'config';
 import { handleError } from 'utils';
 import { Table } from 'components';
 import CartEmpty from 'components/CartEmpty';
-import { Products } from 'types';
 import columns from './columns';
 import { useStyles } from './styles';
 
@@ -21,14 +20,10 @@ const stripePromise = loadStripe(
 const Cart: NextPage = () => {
   const { classes: { root, indicator, label } } = useStyles();
   const [section, setSection] = useState<'cart' | 'history'>('cart');
-  const [updatedPrice, setUpdatedPrice] = useState<Products[]>([]);
   const { data: account, isLoading: isCartLoading } = accountApi.useGet();
   const { mutate: payment } = productsApi.usePaymentProduct();
 
-  const dataCart = useMemo(
-    () => (updatedPrice.length ? updatedPrice : account!.cart),
-    [account, updatedPrice],
-  );
+  const dataCart = useMemo(() => account!.cart, [account]);
 
   const total = useMemo(
     () => dataCart
@@ -90,7 +85,6 @@ const Cart: NextPage = () => {
               <Table
                 columns={columns[section]}
                 data={dataCart}
-                onCartChange={(val) => setUpdatedPrice(val)}
               />
               {section === 'cart' && (
                 <Paper radius="xs" p="md" w={315}>

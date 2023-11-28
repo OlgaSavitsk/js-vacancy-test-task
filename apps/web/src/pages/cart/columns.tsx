@@ -1,6 +1,7 @@
 import { Button, CloseButton, Image, Group, Text, MediaQuery } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import { ColumnDef } from '@tanstack/react-table';
+
 import { NumberCell } from 'components';
 import { userApi } from 'resources/user';
 import { Products } from 'types';

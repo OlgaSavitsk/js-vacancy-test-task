@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import { Products, User } from 'types';
-
 import { userSchema } from 'schemas';
 import { DATABASE_DOCUMENTS } from 'app-constants';
 
@@ -29,9 +28,14 @@ const updateCart = (_id: string, productId: string) => {
 };
 
 const updateQuantity = (_id: string, productId: string, quantity: number) => {
-  return service.atomic.updateMany(
-    { _id, cart: { $elemMatch: { _id: productId } } },
-    { $set: { 'cart.$.quantity': quantity } },
+  return service.updateMany(
+    { _id },
+    ({ cart }) => ({
+      cart: [
+        ..._.map(cart, (item) =>
+          item._id === productId ? { ...item, quantity: quantity } : item),
+      ],
+    }),
   );
 };
 
@@ -42,7 +46,7 @@ const updateProductStatus = (userId: string, productId: string) => {
   );
 };
 
-const increaseQuantity = (_id: string, product: Products) => {
+const increaseQuantity = (userId: string, product: Products) => {
   const { quantity } = product;
 
   product = {
@@ -50,7 +54,7 @@ const increaseQuantity = (_id: string, product: Products) => {
     quantity: quantity ? quantity + 1 : quantity,
   };
 
-  return service.updateMany({ _id }, ({ cart }) => ({
+  return service.updateMany({ _id: userId }, ({ cart }) => ({
     cart: [
       ..._.map(cart, (item) => (item._id === product._id ? product : item)),
     ],

@@ -27,6 +27,8 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
 
   const { paymentFrom, paymentTo } = price || {};
 
+  console.log('paymentFrom', paymentFrom);
+
   const validatedSearch = searchValue.split('\\').join('\\\\').split('.').join('\\.');
   const regExp = new RegExp(validatedSearch, 'gi');
 
@@ -42,7 +44,7 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
         price ? {
           price: {
             $gte: paymentFrom,
-            $lte: paymentTo,
+            $lt: paymentTo,
           },
         } : {},
       ],
@@ -52,7 +54,7 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
   );
 
   ctx.body = {
-    products: products.results,
+    products: productsService.getProductsOnSale(products.results),
     totalPages: products.pagesCount,
     count: products.count,
   };

@@ -1,10 +1,20 @@
-import { useCallback } from 'react';
-import { ActionIcon, rem, Skeleton, Stack, Title, UnstyledButton, Text, Paper, Flex, Container } from '@mantine/core';
 import { NextPage } from 'next';
 import router from 'next/router';
 import Head from 'next/head';
-
+import { useCallback } from 'react';
+import {
+  ActionIcon,
+  rem,
+  Skeleton,
+  Stack,
+  Title,
+  UnstyledButton,
+  Text,
+  Paper,
+  Flex,
+  Container } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
+
 import { Card } from 'components';
 import { accountApi } from 'resources/account';
 import { RoutePath } from 'routes';

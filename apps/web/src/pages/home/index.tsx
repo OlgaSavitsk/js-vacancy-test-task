@@ -23,7 +23,6 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch, IconX } from '@tabler/icons-react';
 
 import { Card, NumberInput, PaginationComponent, Pill, SortControl } from 'components';
-
 import { productsApi } from 'resources/products';
 import { useStyles } from './styles';
 
@@ -224,15 +223,16 @@ const Home: NextPage = () => {
                     <Title order={5}>
                       {data?.count}
                       {' '}
-                      results
+                      result
+                      {data?.count! === 1 ? '' : 's'}
                     </Title>
                     {Object.values({ price: params.price, searchValue: params.searchValue })
                       .map((item) => (
                         item && (
-                          <Pill
-                            value={item}
-                            onRemove={() => handleRemove(item)}
-                          />
+                        <Pill
+                          value={item}
+                          onRemove={() => handleRemove(item)}
+                        />
                         )
                       ))}
                   </Skeleton>
@@ -247,12 +247,14 @@ const Home: NextPage = () => {
                 <Grid
                   gutter={20}
                   sx={{
+                    position: 'relative',
                     '@media (max-width: 755px)': {
                       justifyContent: 'center',
                       width: '100%',
                     },
                   }}
                 >
+                  <LoadingOverlay visible={isListLoading} overlayBlur={2} loaderProps={{ size: 'lg', variant: 'dots' }} />
                   {data.products.map((item) => (
                     <Grid.Col sm={12} md={6} lg={4}>
                       <Skeleton
@@ -274,13 +276,14 @@ const Home: NextPage = () => {
                   ))}
                 </Grid>
               ) : (
-                <Group pos="relative">
-                  {isListLoading && <LoadingOverlay visible={isListLoading} overlayBlur={2} loaderProps={{ size: 'lg', variant: 'dots' }} />}
+                <Group>
+                  {!isListLoading && (
                   <Container p={75}>
                     <Text size="xl" color="grey">
                       No results found, try to adjust your search.
                     </Text>
                   </Container>
+                  )}
                 </Group>
               )}
             </Stack>

@@ -11,9 +11,9 @@ type Request = {
 };
 
 async function validator(ctx: AppKoaContext<ValidatedData, Request>, next: Next) {
-  const isUserExists = await productsService.exists({ _id: ctx.request.params.id });
+  const isProductExists = await productsService.exists({ _id: ctx.request.params.id });
 
-  ctx.assertError(isUserExists, 'Product not found');
+  ctx.assertError(isProductExists, 'Product not found');
 
   await next();
 }

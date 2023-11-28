@@ -2,16 +2,17 @@ import { useCallback, useLayoutEffect } from 'react';
 import Head from 'next/head';
 import router from 'next/router';
 import { NextPage } from 'next';
+
 import { Stack, Title, Text, Button } from '@mantine/core';
 
 import { RoutePath } from 'routes';
 import { PartyIcon } from 'public/icons';
-import { userApi } from 'resources/user';
+import { productsApi } from 'resources/products';
 
 const SuccessPage: NextPage = () => {
   const {
-    mutate: addToCart,
-  } = userApi.useAddToCart();
+    mutate: updateProduct,
+  } = productsApi.useUpdatePaymentProduct();
 
   const handleClick = useCallback(() => {
     router.push(RoutePath.Cart);
@@ -19,10 +20,10 @@ const SuccessPage: NextPage = () => {
 
   useLayoutEffect(() => {
     async function fetchData() {
-      await addToCart({ product: null });
+      await updateProduct({ product: null });
     }
     fetchData();
-  }, [addToCart]);
+  }, [updateProduct]);
 
   return (
     <>

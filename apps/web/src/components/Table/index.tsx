@@ -12,7 +12,6 @@ import {
   getCoreRowModel,
 } from '@tanstack/react-table';
 
-import { Products } from 'types';
 import Thead from './thead';
 import Tbody from './tbody';
 
@@ -23,7 +22,6 @@ interface TableProps {
   columns: ColumnDef<any>[];
   horizontalSpacing?: SpacingSizes;
   verticalSpacing?: SpacingSizes;
-  onCartChange: (cart: Products[]) => void
 }
 
 const Table: FC<TableProps> = ({
@@ -31,16 +29,10 @@ const Table: FC<TableProps> = ({
   columns,
   horizontalSpacing = 'xl',
   verticalSpacing = 'lg',
-  onCartChange,
 }) => {
   const table = useReactTable({
     data,
     columns,
-    meta: {
-      updatePrice: (cart: Products[]) => {
-        onCartChange(cart);
-      },
-    },
     getCoreRowModel: getCoreRowModel(),
   });
 

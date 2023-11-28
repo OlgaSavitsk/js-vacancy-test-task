@@ -106,9 +106,16 @@ const UnauthorizedLayout: FC<UnauthorizedLayoutProps> = ({ children }) => {
               <Avatar src="/images/avatar-2.png" radius="xl" />
               <Avatar src="/images/avatar-3.png" radius="xl" />
               <Avatar src="/images/avatar-4.png" radius="xl" />
-              <span>
-                <b>+100</b>
-                {' '}
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                marginLeft: '1.25rem',
+                whiteSpace: 'pre' }}
+              >
+                <b>
+                  +100
+                  {' '}
+                </b>
                 users from all over the world
               </span>
             </Avatar.Group>

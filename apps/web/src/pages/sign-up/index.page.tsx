@@ -22,6 +22,7 @@ import { Link } from 'components';
 import { accountApi } from 'resources/account';
 import { EMAIL_REGEX, PASSWORD_REGEX } from 'app-constants';
 import SignIn from 'pages/sign-in/index.page';
+import { useRouter } from 'next/router';
 
 const schema = z.object({
   email: z.string().regex(EMAIL_REGEX, 'Email format is incorrect.'),
@@ -46,6 +47,7 @@ const passwordRules = [
 ];
 
 const SignUp: NextPage = () => {
+  const { push } = useRouter();
   const [registered, setRegistered] = useState(false);
   const [passwordRulesData, setPasswordRulesData] = useState(passwordRules);
 
@@ -76,6 +78,7 @@ const SignUp: NextPage = () => {
   const onSubmit = (data: SignUpParams) => signUp(data, {
     onSuccess: (response: any) => {
       if (response.signupToken) setRegistered(true);
+      push(RoutePath.SignIn);
     },
     onError: (e) => handleError(e, setError),
   });

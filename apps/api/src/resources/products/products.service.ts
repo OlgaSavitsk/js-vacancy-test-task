@@ -1,24 +1,24 @@
-import { Products } from 'types';
+import { Products, ProductsType } from 'types';
 import { productsSchema } from 'schemas';
 import { DATABASE_DOCUMENTS } from 'app-constants';
 
 import db from 'db';
+import _ from 'lodash';
 
 const service = db.createService<Products>(DATABASE_DOCUMENTS.PRODUCTS, {
   schemaValidator: (obj) => productsSchema.parseAsync(obj),
 });
 
-const updateLastRequest = (_id: string) => {
+const updateAfterPayment = (_id: string) => {
   return service.atomic.updateOne(
-    { _id },
-    {
-      $set: {
-        userId: _id,
-      },
-    },
+    { },
+    { $pull: { $elemMatch: { _id: _id } } },
   );
 };
 
+const getProductsOnSale = (products: Products[]) => _.filter(products, { status: ProductsType.OnSale });
+
 export default Object.assign(service, {
-  updateLastRequest,
+  updateAfterPayment,
+  getProductsOnSale,
 });

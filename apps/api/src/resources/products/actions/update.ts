@@ -1,47 +1,33 @@
-import { z } from 'zod';
-import { AppKoaContext, Next, AppRouter } from 'types';
-
 import { validateMiddleware } from 'middlewares';
-
 import { userService } from 'resources/user';
-import { productsService } from 'resources/products';
+import { productsSchema } from 'schemas';
+import { AppKoaContext, AppRouter, ProductsType } from 'types';
+import { z } from 'zod';
+import productsService from '../products.service';
 
 const schema = z.object({
-  title: z.string().min(1, 'Please enter Title').max(100),
-  price: z.coerce.number().min(1, 'Please enter Price').max(100),
+  product: productsSchema.nullable(),
 });
 
 type ValidatedData = z.infer<typeof schema>;
-type Request = {
-  params: {
-    id: string;
-  };
-};
 
-async function validator(
-  ctx: AppKoaContext<ValidatedData, Request>,
-  next: Next,
-) {
-  const isUserExists = await userService.exists({ _id: ctx.request.params.id });
+async function handler(ctx: AppKoaContext<ValidatedData>) {
+  const { user } = ctx.state;
 
-  ctx.assertError(isUserExists, 'User not found');
+  await userService.updateMany({ _id: user._id }, () => ({
+    cart: [],
+  }));
 
-  await next();
-}
+  for (const item of user.cart) {
+    await userService.updateProductStatus(user._id, item._id);
+    await productsService.updateMany({ _id: item._id }, () => ({
+      status: ProductsType.Sold,
+    }));
+  }
 
-async function handler(ctx: AppKoaContext<ValidatedData, Request>) {
-  const { title, price } = ctx.validatedData;
-
-  const updatedProduct = await productsService.updateOne(
-    { _id: ctx.request.params?.id },
-    () => ({
-      title, price,
-    }),
-  );
-
-  ctx.body = updatedProduct;
+  ctx.body = user;
 }
 
 export default (router: AppRouter) => {
-  router.put('/:id', validator, validateMiddleware(schema), handler);
+  router.post('/payment-success', validateMiddleware(schema), handler);
 };

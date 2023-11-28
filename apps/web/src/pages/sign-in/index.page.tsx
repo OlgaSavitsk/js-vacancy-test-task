@@ -9,7 +9,6 @@ import { IconAlertCircle } from '@tabler/icons-react';
 import { RoutePath } from 'routes';
 import { handleError } from 'utils';
 import { Link } from 'components';
-
 import { accountApi } from 'resources/account';
 import { EMAIL_REGEX } from 'app-constants';
 
@@ -71,14 +70,6 @@ const SignIn: NextPage = () => {
         </Stack>
 
         <Stack spacing={34}>
-          {/* <Button
-            component="a"
-            leftIcon={<GoogleIcon />}
-            href={`${config.API_URL}/account/sign-in/google/auth`}
-            variant="outline"
-          >
-            Continue with Google
-          </Button> */}
           <Group sx={{ fontSize: '16px', justifyContent: 'center' }} spacing={12}>
             Don’t have an account?
             <Link
