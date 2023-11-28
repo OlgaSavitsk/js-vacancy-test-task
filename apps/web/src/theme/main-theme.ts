@@ -149,7 +149,7 @@ const mainTheme: MantineThemeOverride = {
       defaultProps: { width: 'none' },
       styles: () => ({
         image: {
-          objectPosition: 'right !important',
+          // objectPosition: 'right !important',
         },
       }),
     },

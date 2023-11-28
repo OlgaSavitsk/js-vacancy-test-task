@@ -27,8 +27,6 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
 
   const { paymentFrom, paymentTo } = price || {};
 
-  console.log('paymentFrom', paymentFrom);
-
   const validatedSearch = searchValue.split('\\').join('\\\\').split('.').join('\\.');
   const regExp = new RegExp(validatedSearch, 'gi');
 

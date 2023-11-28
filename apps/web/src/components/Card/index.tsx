@@ -111,7 +111,7 @@ const CardProduct: FC<CardProps> = ({ isCreate, product }) => {
             Price:
           </Text>
           <Text size="lg" fw={700}>
-            {product.price}
+            {`${product.price}`.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
           </Text>
         </Group>
 
