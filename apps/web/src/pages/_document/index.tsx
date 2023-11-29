@@ -1,5 +1,7 @@
+import { createGetInitialProps } from '@mantine/next';
 import { Html, Head, Main, NextScript } from 'next/document';
-import { ColorSchemeScript } from '@mantine/core';
+
+const getInitialProps = createGetInitialProps();
 
 const Document = () => (
   <Html>
@@ -8,7 +10,6 @@ const Document = () => (
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
-      <ColorSchemeScript defaultColorScheme="auto" />
     </Head>
     <body>
       <Main />
@@ -16,5 +17,7 @@ const Document = () => (
     </body>
   </Html>
 );
+
+Document.getInitialProps = getInitialProps;
 
 export default Document;

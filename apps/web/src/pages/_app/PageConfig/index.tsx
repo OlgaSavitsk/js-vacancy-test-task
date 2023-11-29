@@ -3,10 +3,7 @@ import { useRouter } from 'next/router';
 
 import { accountApi } from 'resources/account';
 
-import { analyticsService } from 'services';
 import { routesConfiguration, ScopeType, LayoutType, RoutePath } from 'routes';
-
-import config from 'config';
 
 import MainLayout from './MainLayout';
 import UnauthorizedLayout from './UnauthorizedLayout';
@@ -30,15 +27,7 @@ interface PageConfigProps {
 
 const PageConfig: FC<PageConfigProps> = ({ children }) => {
   const { route, push } = useRouter();
-  const { data: account, isLoading: isAccountLoading } = accountApi.useGet({
-    onSettled: () => {
-      if (!config.MIXPANEL_API_KEY) return null;
-
-      analyticsService.init();
-
-      analyticsService.setUser(account);
-    },
-  });
+  const { data: account, isLoading: isAccountLoading } = accountApi.useGet();
 
   if (isAccountLoading) return null;
 

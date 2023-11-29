@@ -5,19 +5,19 @@ import Layout from './_layout';
 import Button from './components/button';
 
 export interface SignUpWelcomeProps {
-  firstName: string;
+  // firstName: string;
   href: string;
 }
 
 export const SignUpWelcome:FC<SignUpWelcomeProps> = ({
-  firstName = 'John',
+  // firstName = 'John',
   href = 'https://ship.paralect.com',
 }) => (
   <Layout previewText="Welcome on board the Ship!">
     <Text>
       Dear
       {' '}
-      {firstName}
+      {/* {firstName} */}
       ,
     </Text>
 

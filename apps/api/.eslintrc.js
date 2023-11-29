@@ -20,10 +20,10 @@ module.exports = {
     'arrow-body-style': 0,
     'no-underscore-dangle': 0,
     'function-paren-newline': 1,
-    'import/no-extraneous-dependencies': ['error', {
+    "import/no-extraneous-dependencies": ["error", {
       devDependencies: [
-        '**/*.spec.{js,ts}',
-        '**/*.builder.{js,ts}',
+        "**/*.spec.{js,ts}",
+        "**/*.builder.{js,ts}",
       ],
     }],
     'max-len': ['warn', {

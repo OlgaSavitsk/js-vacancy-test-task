@@ -4,11 +4,13 @@ import Router from '@koa/router';
 import { Template } from 'mailer';
 
 import { User } from './user.types';
+import { Products } from './products.types';
 
 export type AppKoaContextState = {
   user: User;
   accessToken: string;
   isShadow: boolean | null;
+  products: Products[] | [];
 };
 
 export type CustomErrors = {

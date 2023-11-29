@@ -1,17 +1,12 @@
 import { memo, FC } from 'react';
-import { AppShellHeader as LayoutHeader, Container } from '@mantine/core';
+import { Header as LayoutHeader, Container } from '@mantine/core';
 
 import { accountApi } from 'resources/account';
-
 import { Link } from 'components';
 import { RoutePath } from 'routes';
-
 import { LogoImage } from 'public/images';
-
 import UserMenu from './components/UserMenu';
-import ShadowLoginBanner from './components/ShadowLoginBanner';
-
-import classes from './index.module.css';
+import MenuToggle from './components/MenuToggle';
 
 const Header: FC = () => {
   const { data: account } = accountApi.useGet();
@@ -19,20 +14,25 @@ const Header: FC = () => {
   if (!account) return null;
 
   return (
-    <LayoutHeader>
-      {account.isShadow && <ShadowLoginBanner email={account.email} />}
+    <LayoutHeader height="72px">
       <Container
-        className={classes.header}
-        mih={72}
-        px={32}
-        py={0}
-        display="flex"
+        sx={() => ({
+          minHeight: '72px',
+          padding: '0 32px',
+          display: 'flex',
+          flex: '1 1 auto',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: '#FCFCFC',
+          zIndex: 2,
+        })}
         fluid
       >
         <Link type="router" href={RoutePath.Home}>
           <LogoImage />
         </Link>
         <UserMenu />
+        <MenuToggle />
       </Container>
     </LayoutHeader>
   );

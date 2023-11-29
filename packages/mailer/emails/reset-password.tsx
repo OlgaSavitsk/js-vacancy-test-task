@@ -5,19 +5,19 @@ import Layout from './_layout';
 import Button from './components/button';
 
 export interface ResetPasswordProps {
-  firstName: string;
+  // firstName: string;
   href: string;
 }
 
 export const ResetPassword:FC<ResetPasswordProps> = ({
-  firstName = 'John',
+  // firstName = 'John',
   href = 'https://ship.paralect.com',
 }) => (
   <Layout previewText="Reset password">
     <Text>
       Dear
       {' '}
-      {firstName}
+      {/* {firstName} */}
       ,
     </Text>
 

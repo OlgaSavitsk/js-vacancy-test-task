@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { Stack, Title, Text, Button } from '@mantine/core';
 
+import { QueryParam } from 'types';
+
 import { accountApi } from 'resources/account';
 
 import { handleError } from 'utils';
 import { RoutePath } from 'routes';
-
-import { QueryParam } from 'types';
 
 type ForgotPasswordParams = {
   email: QueryParam,
@@ -38,10 +38,11 @@ const ForgotPassword: NextPage = () => {
         <Head>
           <title>Password reset link expired</title>
         </Head>
-        <Stack w={328}>
+        <Stack sx={{ width: '328px' }}>
           <Title order={2}>Reset link has been sent</Title>
-          <Text fz={14}>Reset link sent successfully</Text>
-
+          <Text component="p" sx={{ fontSize: '14px' }}>
+            Reset link sent successfully
+          </Text>
           <Button onClick={() => router.push(RoutePath.SignIn)}>
             Back to Sign In
           </Button>
@@ -55,17 +56,15 @@ const ForgotPassword: NextPage = () => {
       <Head>
         <title>Password reset link expired</title>
       </Head>
-      <Stack w={328}>
+      <Stack sx={{ width: '328px' }}>
         <Title order={2}>Password reset link expired</Title>
-
-        <Text mt={0}>
+        <Text component="p" mt={0}>
           Sorry, your password reset link has expired. Click the button below to get a new one.
         </Text>
-
         <Button
+          onClick={onSubmit}
           loading={isResendEmailLoading}
           fullWidth
-          onClick={onSubmit}
         >
           Resend link to
           {' '}

@@ -1,20 +1,21 @@
 import { FC } from 'react';
-import { AppShellFooter as LayoutFooter } from '@mantine/core';
-
-import classes from './index.module.css';
+import { Footer as LayoutFooter } from '@mantine/core';
 
 const Footer: FC = () => {
   const year = new Date().getFullYear();
 
   return (
     <LayoutFooter
-      className={classes.footer}
-      mt="auto"
-      px={0}
-      py={12}
-      bg="gray.0"
-      ta="center"
-      fz={12}
+      height="40px"
+      sx={(theme) => ({
+        marginTop: 'auto',
+        padding: '12px 0',
+        textAlign: 'center',
+        flex: '0 1 auto',
+        backgroundColor: theme.colors.gray[0],
+        border: 'none',
+        fontSize: '12px',
+      })}
     >
       {`Ship ${year} © All rights reserved`}
     </LayoutFooter>

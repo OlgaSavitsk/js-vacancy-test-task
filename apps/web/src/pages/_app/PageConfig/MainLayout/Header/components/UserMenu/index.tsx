@@ -1,41 +1,58 @@
-import Link from 'next/link';
 import { memo, FC } from 'react';
-import { Menu } from '@mantine/core';
-import { IconUserCircle, IconLogout } from '@tabler/icons-react';
+import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 
-import { accountApi } from 'resources/account';
+import { Burger, Group, Paper, Transition } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 import { RoutePath } from 'routes';
+import { useStyles } from './styles';
 
-import MenuToggle from '../MenuToggle';
-
-import classes from './index.module.css';
+const links = [
+  { link: RoutePath.Home, label: 'Marketplace' },
+  { link: RoutePath.Products, label: 'Your Products' },
+];
 
 const UserMenu: FC = () => {
-  const { mutate: signOut } = accountApi.useSignOut();
+  const [opened, { toggle: toggleDrawer }] = useDisclosure(false);
+  const { classes, cx } = useStyles();
+  const router = useRouter();
+
+  const menuItems = links.map((link) => (
+    <NextLink
+      type="router"
+      key={link.label}
+      href={link.link}
+      className={classes.link}
+      data-active={router.pathname === link.link || undefined}
+      onClick={(event) => {
+        event.preventDefault();
+        router.push(link.link);
+      }}
+    >
+      {link.label}
+    </NextLink>
+  ));
 
   return (
-    <Menu>
-      <Menu.Target>
-        <MenuToggle />
-      </Menu.Target>
-      <Menu.Dropdown className={classes.dropdown}>
-        <Menu.Item
-          component={Link}
-          href={RoutePath.Profile}
-          leftSection={<IconUserCircle size={16} />}
-        >
-          Profile settings
-        </Menu.Item>
+    <>
+      <Group className={cx(classes.hiddenMobile, classes.menu)}>
+        {menuItems}
+      </Group>
+      <Burger
+        opened={opened}
+        onClick={toggleDrawer}
+        className={classes.hiddenDesktop}
+      />
+      <Transition transition="pop-top-right" duration={200} mounted={opened}>
+        {(styles) => (
+          <Paper className={classes.dropdown} withBorder style={styles}>
+            {menuItems}
+          </Paper>
+        )}
+      </Transition>
+    </>
 
-        <Menu.Item
-          onClick={() => signOut()}
-          leftSection={<IconLogout size={16} />}
-        >
-          Log out
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
   );
 };
 

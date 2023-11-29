@@ -11,16 +11,17 @@ export enum LayoutType {
 export enum RoutePath {
   // Private paths
   Home = '/',
-  Profile = '/profile',
+  Products = '/products',
+  NewProduct = '/new-product',
+  Cart = '/cart',
 
   // Auth paths
   SignIn = '/sign-in',
   SignUp = '/sign-up',
-  ForgotPassword = '/forgot-password',
-  ResetPassword = '/reset-password',
-  ExpireToken = '/expire-token',
 
   NotFound = '/404',
+  Success = '/success',
+  Failed = '/failed',
 }
 
 type RoutesConfiguration = {
@@ -36,7 +37,15 @@ export const routesConfiguration: RoutesConfiguration = {
     scope: ScopeType.PRIVATE,
     layout: LayoutType.MAIN,
   },
-  [RoutePath.Profile]: {
+  [RoutePath.Products]: {
+    scope: ScopeType.PRIVATE,
+    layout: LayoutType.MAIN,
+  },
+  [RoutePath.Cart]: {
+    scope: ScopeType.PRIVATE,
+    layout: LayoutType.MAIN,
+  },
+  [RoutePath.NewProduct]: {
     scope: ScopeType.PRIVATE,
     layout: LayoutType.MAIN,
   },
@@ -50,18 +59,8 @@ export const routesConfiguration: RoutesConfiguration = {
     scope: ScopeType.PUBLIC,
     layout: LayoutType.UNAUTHORIZED,
   },
-  [RoutePath.ForgotPassword]: {
-    scope: ScopeType.PUBLIC,
-    layout: LayoutType.UNAUTHORIZED,
-  },
-  [RoutePath.ResetPassword]: {
-    scope: ScopeType.PUBLIC,
-    layout: LayoutType.UNAUTHORIZED,
-  },
-  [RoutePath.ExpireToken]: {
-    scope: ScopeType.PUBLIC,
-    layout: LayoutType.UNAUTHORIZED,
-  },
 
   [RoutePath.NotFound]: {},
+  [RoutePath.Success]: {},
+  [RoutePath.Failed]: {},
 };
