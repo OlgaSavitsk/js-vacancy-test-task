@@ -34,6 +34,9 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
     {
       $and: [
         {
+          status: 'On sale',
+        },
+        {
           $or: [
             { title: { $regex: regExp } },
             { createdOn: {} },
@@ -52,7 +55,7 @@ async function handler(ctx: AppKoaContext<ValidatedData>) {
   );
 
   ctx.body = {
-    products: productsService.getProductsOnSale(products.results),
+    products: products.results,
     totalPages: products.pagesCount,
     count: products.count,
   };
