@@ -220,12 +220,14 @@ const Home: NextPage = () => {
                     visible={isListLoading}
                     width="auto"
                   >
+                    {data && (
                     <Title order={5}>
-                      {data?.count}
+                      {data.count}
                       {' '}
                       result
-                      {data?.count! === 1 ? '' : 's'}
+                      {data.count! === 1 ? '' : 's'}
                     </Title>
+                    )}
                     {Object.values({ price: params.price, searchValue: params.searchValue })
                       .map((item) => (
                         item && (
