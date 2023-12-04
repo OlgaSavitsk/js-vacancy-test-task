@@ -30,8 +30,6 @@ const processEnv = {
   WS_URL: process.env.NEXT_PUBLIC_WS_URL,
   WEB_URL: process.env.NEXT_PUBLIC_WEB_URL,
   MIXPANEL_API_KEY: process.env.NEXT_PUBLIC_MIXPANEL_API_KEY,
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
 } as Record<keyof Config, string | undefined>;
 
 const config = configUtil.validateConfig<Config>(schema, processEnv);
