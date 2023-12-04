@@ -6,9 +6,9 @@ import { loadStripe } from '@stripe/stripe-js';
 
 import { accountApi } from 'resources/account';
 import { productsApi } from 'resources/products';
-import config from 'config';
 import { handleError } from 'utils';
 import { Table } from 'components';
+import config from 'config';
 import CartEmpty from 'components/CartEmpty';
 import columns from './columns';
 import { useStyles } from './styles';
